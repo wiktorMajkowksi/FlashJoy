@@ -1,0 +1,33 @@
+:root{
+  --brand:#E11D48;
+  --accent:#F59E0B;
+  --page-bg:#ffffff;
+}
+.dark{ --page-bg:#0b1220; }
+
+/* Common utility hooks */
+.input{ @apply mt-1 block w-full rounded-lg border px-3 py-2 text-slate-900 dark:text-white bg-white/70 dark:bg-slate-950/70 border-slate-300 dark:border-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500; }
+.error-msg{ @apply mt-1 hidden text-xs text-rose-600; }
+.footer-link{ @apply text-slate-600 dark:text-slate-300 hover:text-rose-600; }
+.logo-pill{ @apply text-lg font-semibold tracking-wide text-slate-400 dark:text-slate-500; }
+
+/* Cards */
+.card{ @apply rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm bg-white/70 dark:bg-slate-950/70 backdrop-blur transition-transform will-change-transform; }
+.card-img{ @apply w-full h-40 object-cover rounded-lg mb-4; }
+.card-head{ @apply flex items-center gap-3; }
+.card-icon{ @apply grid h-10 w-10 place-items-center rounded-lg; background:#E11D481A; }
+.card-title{ @apply text-base font-semibold text-slate-900 dark:text-slate-100; }
+.card-copy{ @apply mt-3 text-sm text-slate-600 dark:text-slate-300; }
+
+/* Pricing */
+.plan{ @apply relative rounded-2xl border p-6 shadow-sm bg-white/70 dark:bg-slate-950/70 border-slate-200 dark:border-slate-800; }
+.plan-featured{ @apply border-rose-300 ring-2 ring-rose-500 dark:border-rose-700; }
+.badge{ @apply absolute -top-3 left-6 rounded-full bg-rose-600 px-2 py-0.5 text-xs font-semibold text-white shadow; }
+.plan-title{ @apply text-lg font-semibold text-slate-900 dark:text-slate-100; }
+.plan-price{ @apply mt-1 text-3xl font-bold text-slate-900 dark:text-white; }
+.plan-desc{ @apply mt-2 text-sm text-slate-600 dark:text-slate-300; }
+.plan-list{ @apply mt-4 space-y-2 text-sm text-slate-700 dark:text-slate-300; }
+.btn-outline{ @apply mt-6 inline-flex w-full items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-800 dark:text-slate-100 hover:bg-slate-100/60 dark:hover:bg-slate-800/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-rose-500; }
+
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
