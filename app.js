@@ -12,31 +12,20 @@ const SECTIONS = [
 const $ = (sel, root=document) => root.querySelector(sel);
 const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
 
-// ---------- Theme (system / light / dark) ----------
+// ---------- Theme (light / dark only) ----------
 const theme = {
-  get() { return localStorage.getItem('theme') || 'system'; },
+  get() { return localStorage.getItem('theme') || 'light'; },
   set(v) { localStorage.setItem('theme', v); applyTheme(); },
-};
-const systemPrefersDark = () => window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-const effectiveDark = () => {
-  const t = theme.get();
-  return t === 'dark' || (t === 'system' && systemPrefersDark());
 };
 
 function applyTheme() {
-  document.documentElement.classList.toggle('dark', effectiveDark());
-  $$('[data-theme-label]').forEach(el => {
-    const t = theme.get();
-    el.textContent = t === 'system' ? 'System' : (t === 'dark' ? 'Dark' : 'Light');
+  const t = theme.get();
+  document.documentElement.classList.toggle('dark', t === 'dark');
+  // Update any labels
+  document.querySelectorAll('[data-theme-label]').forEach(el => {
+    el.textContent = t === 'dark' ? 'Dark' : 'Light';
   });
-  // keep custom bg colour if set
-  const saved = localStorage.getItem('custom-page-bg');
-  if (saved) document.documentElement.style.setProperty('--page-bg', saved);
 }
-
-window.matchMedia('(prefers-color-scheme: dark)')?.addEventListener('change', () => {
-  if (theme.get() === 'system') applyTheme();
-});
 applyTheme();
 
 // ---------- Build nav (desktop + mobile) ----------
@@ -54,31 +43,24 @@ function buildNav(){
     desktopNav.appendChild(li);
   });
 
-  // Theme button
+  // Theme button (desktop)
   const themeLi = document.createElement('li');
-  themeLi.innerHTML = `<button id="theme-btn" class="inline-flex items-center gap-2 rounded-md border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100/60 dark:hover:bg-slate-800/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500" aria-label="Toggle color theme" title="Toggle color theme">🌓 <span data-theme-label></span></button>`;
+  themeLi.innerHTML = `<button id="theme-btn" class="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500" aria-label="Toggle color theme" title="Toggle color theme">🌓 <span data-theme-label></span></button>`;
   desktopNav.appendChild(themeLi);
-
-  // Background color picker (desktop)
-  const colorLi = document.createElement('li');
-  colorLi.innerHTML = `<label class="sr-only" for="bg-picker">Page background</label>
-    <input id="bg-picker" type="color" class="h-8 w-8 cursor-pointer rounded-md border border-slate-300 dark:border-slate-700 p-0" title="Page background" />`;
-  desktopNav.appendChild(colorLi);
 
   // Mobile items
   mobileList.innerHTML = '';
   SECTIONS.forEach(({id,label}) => {
     const li = document.createElement('li');
     li.setAttribute('role','none');
-    li.innerHTML = `<a role="menuitem" href="#${id}" class="nav-link-mobile block rounded-md px-3 py-2 text-sm text-slate-700 dark:text-slate-200">${label}</a>`;
+    li.innerHTML = `<a role="menuitem" href="#${id}" class="nav-link-mobile block rounded-md px-3 py-2 text-sm">${label}</a>`;
     mobileList.appendChild(li);
   });
   const liTheme = document.createElement('li');
   liTheme.setAttribute('role','none');
   liTheme.className = 'pt-2';
   liTheme.innerHTML = `<div class="flex items-center gap-2">
-    <button id="theme-btn-mobile" class="inline-flex items-center gap-2 rounded-md border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100/60 dark:hover:bg-slate-800/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500">🌓 <span data-theme-label></span></button>
-    <input id="bg-picker-mobile" type="color" class="h-8 w-8 cursor-pointer rounded-md border border-slate-300 dark:border-slate-700 p-0" title="Page background" />
+    <button id="theme-btn-mobile" class="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500">🌓 <span data-theme-label></span></button>
   </div>`;
   mobileList.appendChild(liTheme);
 
@@ -100,28 +82,12 @@ mobileList.addEventListener('click', e => {
 
 // Theme button clicks
 function cycleTheme(){
-  const order = ['system','light','dark'];
-  const idx = order.indexOf(theme.get());
-  theme.set(order[(idx+1)%order.length]);
+  const current = theme.get();
+  theme.set(current === 'light' ? 'dark' : 'light');
 }
 document.addEventListener('click', e => {
   if (e.target.closest('#theme-btn') || e.target.closest('#theme-btn-mobile')) cycleTheme();
 });
-
-// ---------- Custom background: persist & sync ----------
-(function setupBgPicker(){
-  const KEY = 'custom-page-bg';
-  const pickers = ['#bg-picker','#bg-picker-mobile'].map(sel => $(sel)).filter(Boolean);
-  const saved = localStorage.getItem(KEY);
-  if (saved) document.documentElement.style.setProperty('--page-bg', saved);
-  if (saved?.startsWith('#')) pickers.forEach(p => p.value = saved);
-  pickers.forEach(p => p.addEventListener('input', e => {
-    const v = e.target.value;
-    document.documentElement.style.setProperty('--page-bg', v);
-    localStorage.setItem(KEY, v);
-  }));
-  // keep bg when theme changes (wrapped earlier in applyTheme)
-})();
 
 // ---------- Active section highlighting & progress ----------
 const progress = $('#progress');
@@ -208,7 +174,6 @@ function removeToast(id){
 
 // ---------- Form validation ----------
 const form = $('#contact-form');
-const field = id => ({ el: $(id), err: $(`${id.replace('#','')} ~ .error-msg`) }); // not used; we'll map explicitly
 const nameEl = $('#name');
 const emailEl = $('#email');
 const msgEl = $('#message');
@@ -256,3 +221,76 @@ document.addEventListener('click', e => {
   e.preventDefault();
   el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
 });
+
+
+// ---------- Scroll-driven HERO background (JS fallback) ----------
+(() => {
+  const supportsTimeline = (window.CSS && CSS.supports && CSS.supports('animation-timeline: scroll()'));
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (supportsTimeline || prefersReduced) return; // CSS (or reduced motion) handles it
+
+  const doc = document.documentElement;
+  const stageWrap = document.querySelector('#hero.stage-wrap');
+  const stage = document.querySelector('#hero .stage');
+  if (!stageWrap || !stage) return;
+
+  function lerp(a,b,t){ return a + (b - a) * t; }
+  function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+
+  function getColours(){
+    const dark = document.documentElement.classList.contains('dark');
+    // Light and dark sets roughly match CSS vars above
+    return dark
+      ? [[14,165,233],[124,58,237],[239,68,68]]
+      : [[14,165,233],[167,139,250],[244,63,94]];
+  }
+
+  function onScroll(){
+    const start = stageWrap.offsetTop;
+    const end = start + stageWrap.offsetHeight - window.innerHeight;
+    const t = clamp((window.scrollY - start) / Math.max(1, (end - start)), 0, 1);
+    doc.style.setProperty('--scrub', String(t));
+
+    const [c1,c2,c3] = getColours();
+    const phase = t < 0.5 ? 0 : 1;
+    const localT = t < 0.5 ? t/0.5 : (t-0.5)/0.5;
+    const fromTop = phase === 0 ? c1 : c2;
+    const toTop   = phase === 0 ? c2 : c3;
+
+    const top = `rgb(${Math.round(lerp(fromTop[0], toTop[0], localT))}, ${Math.round(lerp(fromTop[1], toTop[1], localT))}, ${Math.round(lerp(fromTop[2], toTop[2], localT))})`;
+    const bottom = phase === 0 ? `rgb(${c2[0]}, ${c2[1]}, ${c2[2]})` : 'rgb(17,17,17)';
+    stage.style.background = `linear-gradient(180deg, ${top}, ${bottom})`;
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  // Also re-run when theme toggles
+  const mo = new MutationObserver(onScroll);
+  mo.observe(document.documentElement, { attributes:true, attributeFilter:['class'] });
+
+  onScroll();
+})();
+
+// /* REVEAL-LEFT STAGGER */
+(function(){
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cards = Array.from(document.querySelectorAll('.reveal-left'));
+  if (!cards.length) return;
+  if (prefersReduced){
+    cards.forEach(el => el.classList.add('in-view'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting){
+        const el = entry.target;
+        const i = cards.indexOf(el);
+        el.style.transitionDelay = `${Math.min(i * 80, 400)}ms`;
+        el.classList.add('in-view');
+        io.unobserve(el);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+  cards.forEach(el => io.observe(el));
+})();
+
