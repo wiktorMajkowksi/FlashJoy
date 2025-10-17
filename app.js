@@ -3,7 +3,6 @@ const SECTIONS = [
   { id: 'hero', label: 'Home' },
   { id: 'gallery', label: 'Gallery' },
   { id: 'features', label: 'Features' },
-  { id: 'proof', label: 'Social Proof' },
   { id: 'pricing', label: 'Pricing' },
   { id: 'about', label: 'About' },
   { id: 'contact', label: 'Contact' },
