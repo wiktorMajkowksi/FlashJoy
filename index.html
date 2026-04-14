@@ -1,396 +1,469 @@
 <!DOCTYPE html>
-<html lang="en" class="dark scroll-smooth">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>FlashJoy</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <meta name="color-scheme" content="dark light" />
-    <meta name="image-size" content="250">
-    <link rel="stylesheet" href="./styles.css">
-    <link rel="icon" type="image/png" href="Logo_basic.png">
-  
-    <style>
-      .reveal-right{ opacity:0; transform: translateX(20px); will-change: transform, opacity; }
-      .reveal-right.in-view{ opacity:1; transform:none; transition: opacity .6s ease, transform .6s ease; }
-    </style>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FlashJoy — Premium Photobooths for Every Celebration</title>
+  <meta name="description" content="Premium photobooths for weddings, parties & brand events. Pro lighting, instant prints, unforgettable moments. Serving London & the South East." />
+  <link rel="icon" type="image/png" href="Logo_basic.png" />
 
-  </head>
-  <body class="min-h-screen pt-14 sm:pt-16 text-slate-900 dark:text-slate-100 font-sans">
-    <!-- Global scroll-driven background -->
-    <div id="global-bg" aria-hidden="true"></div>
-    <!-- Skip link -->
-    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 bg-sky-600 text-white px-3 py-2 rounded-md">Skip to content</a>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-    <!-- Header / Nav -->
-    <header id="site-header" class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:bg-slate-950/70 border-b border-slate-200 dark:border-slate-800">
-      <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6" aria-label="Primary">
-        <div class="flex items-center gap-2">
-          <div class="h-8 w-8 grid place-items-center rounded-md">
-            <img src="Logo_basic_whiteout.png" alt="FlashJoy logo" />
-          </div>
-          <span class="text-lg font-bold tracking-tight text-slate-800 dark:text-slate-100">FlashJoy</span>
-        </div>
-        <button id="menu-btn" class="sm:hidden inline-flex items-center gap-2 rounded-md px-3 py-2 text-slate-700 dark:text-slate-200 ring-1 ring-slate-300 dark:ring-slate-700 hover:bg-slate-100/70 dark:hover:bg-slate-800/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500" aria-expanded="false" aria-controls="mobile-menu">
-          <span class="sr-only">Toggle menu</span>☰
-        </button>
-        <ul id="desktop-nav" class="hidden sm:flex items-center gap-4 text-sm font-medium">
-          <!-- links + theme + color picker injected by JS -->
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+
+  <!-- Skip link -->
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <!-- ═══ HEADER ═══ -->
+  <header id="site-header">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo" aria-label="FlashJoy — home">
+        <img src="Logo_basic_whiteout.png" alt="" aria-hidden="true" class="logo-img" />
+        <span class="logo-wordmark">FlashJoy</span>
+      </a>
+
+      <nav aria-label="Primary">
+        <ul class="nav-list" id="desktop-nav">
+          <li><a href="#gallery"  class="nav-link">Gallery</a></li>
+          <li><a href="#features" class="nav-link">Features</a></li>
+          <li><a href="#pricing"  class="nav-link">Pricing</a></li>
+          <li><a href="#about"    class="nav-link">About</a></li>
+          <li><a href="#contact"  class="nav-link">Contact</a></li>
+          <li><a href="#pricing"  class="nav-cta-pill">Book now</a></li>
         </ul>
       </nav>
-      <div id="mobile-menu" class="sm:hidden hidden">
-        <ul class="space-y-1 border-t border-slate-200 dark:border-slate-800 px-4 py-3" role="menu"></ul>
-      </div>
-    </header>
 
-    <!-- Progress bar under header -->
-    <div class="pointer-events-none fixed inset-x-0 top>[52px] sm:top-[57px] z-20 h-0.5 bg-transparent">
-      <div id="progress" class="h-full transition-all" style="width:0%; background: var(--accent)" aria-hidden="true"></div>
+      <button id="menu-btn" class="menu-btn" aria-expanded="false" aria-controls="mobile-menu" aria-label="Toggle menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
     </div>
 
-    <main id="main">
-      <!-- Hero -->
-<section id="hero" class="stage-wrap relative isolate overflow-hidden">
-  <div class="stage" aria-label="Scroll-driven stage">
-    <div class="layers">
-      <div class="layer dots" aria-hidden="true"></div>
-      <div class="layer glow" aria-hidden="true"></div>
-      <div class="content">
-        <div class="hero-card">
-          <div class="grid items-center gap-10 lg:grid-cols-12">
-            <div class="lg:col-span-7">
-              <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 dark:text-white font-serif opacity-0 translate-y-2 will-change-transform" data-reveal>
-                Joyful photobooths for weddings, parties & brand events.
-              </h1>
-              <p class="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-300">
-                From elegant weddings to high-energy brand activations, FlashJoy brings pro lighting, gorgeous backdrops, and instant
-                prints to every celebration. Serving London & the South East.
-              </p>
-              <div class="mt-6 flex flex-wrap items-center gap-3">
-                <a href="#pricing" class="inline-flex items-center justify-center rounded-lg" style="background: var(--brand)"><span class="px-5 py-3 text-sm font-semibold text-white shadow-md hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-rose-500">Get a quote</span></a>
-                <a href="#gallery" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-5 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 hover:bg-slate-100/60 dark:hover:bg-slate-800/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-500">See products</a>
-              </div>
-              <ul class="mt-6 grid grid-cols-1 gap-2 text-sm text-slate-600 dark:text-slate-300 sm:grid-cols-2" aria-label="Key benefits">
-                <li class="flex items-start gap-2"><span class="mt-1 h-2 w-2 rounded-full" style="background: var(--accent)" aria-hidden="true"></span><span>Unlimited prints & instant sharing</span></li>
-                <li class="flex items-start gap-2"><span class="mt-1 h-2 w-2 rounded-full" style="background: var(--accent)" aria-hidden="true"></span><span>Friendly booth attendant included</span></li>
-                <li class="flex items-start gap-2"><span class="mt-1 h-2 w-2 rounded-full" style="background: var(--accent)" aria-hidden="true"></span><span>Beautiful backdrops & fun props</span></li>
-                <!-- <li class="flex items-start gap-2"><span class="mt-1 h-2 w-2 rounded-full" style="background: var(--accent)" aria-hidden="true"></span><span>Online gallery within 24 hours</span></li> -->
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="mobile-menu" hidden>
+      <ul class="mobile-list">
+        <li><a href="#gallery"  class="mobile-link">Gallery</a></li>
+        <li><a href="#features" class="mobile-link">Features</a></li>
+        <li><a href="#pricing"  class="mobile-link">Pricing</a></li>
+        <li><a href="#about"    class="mobile-link">About</a></li>
+        <li><a href="#contact"  class="mobile-link">Contact</a></li>
+        <li><a href="#pricing"  class="mobile-link is-cta">Book now</a></li>
+      </ul>
     </div>
+  </header>
+
+  <!-- Scroll progress line -->
+  <div class="scroll-track" aria-hidden="true">
+    <div id="progress" class="scroll-fill"></div>
   </div>
-</section>
 
-      <!-- Gallery (SLIDESHOW + THUMBNAILS) -->
-      <section id="gallery" class="scroll-mt-24 bg-transparent dark:bg-transparent">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white font-serif">Gallery</h2>
-          <p class="mt-2 max-w-2xl text-slate-600 dark:text-slate-300">A peek at our booth.</p>
+  <main id="main">
 
-          <div class="gallery-container mt-6">
-            <!-- Slides -->
-            <div class="mySlides fade" data-gallery data-index="0">
-              <div class="numbertext">1 / 5</div>
-              <img src="left_black_pod.jpeg" alt="FlashJoy booth">
-            </div>
+    <!-- ═══════════ HERO ═══════════ -->
+    <section id="hero" class="hero">
 
-            <div class="mySlides fade" data-gallery data-index="1">
-              <div class="numbertext">2 / 5</div>
-              <img src="front_black_pod.jpeg" alt="FlashJoy booth">
-            </div>
+      <!-- Layered atmospheric background -->
+      <div class="hero-bg" aria-hidden="true">
+        <div class="orb orb-violet"></div>
+        <div class="orb orb-rose"></div>
+        <div class="orb orb-amber"></div>
+        <div class="hero-grain"></div>
+        <div class="hero-grid"></div>
+        <!-- Horizon glow line -->
+        <div class="hero-horizon"></div>
+      </div>
 
-            <div class="mySlides fade" data-gallery data-index="2">
-              <div class="numbertext">3 / 5</div>
-              <img src="right_black_pod.jpeg" alt="FlashJoy booth">
-            </div>
+      <!-- Content -->
+      <div class="hero-body">
 
-            <div class="mySlides fade" data-gallery data-index="3">
-              <div class="numbertext">4 / 5</div>
-              <img src="zoom_black_pod2.jpeg" alt="FlashJoy booth">
-            </div>
-
-            <div class="mySlides fade" data-gallery data-index="3">
-              <div class="numbertext">5 / 5</div>
-              <img src="zoom_black_pod.jpeg" alt="FlashJoy booth">
-            </div>
-
-            <!-- Next/Prev -->
-            <button class="prev" aria-label="Previous slide">&#10094;</button>
-            <button class="next" aria-label="Next slide">&#10095;</button>
-
-            <!-- Caption -->
-            <div class="caption-container" aria-live="polite">
-              <p id="caption">FlashJoy booth</p>
-            </div>
-
-            <!-- Thumbnails -->
-            <div class="thumb-row">
-              <button class="thumb">
-                <img class="demo cursor" src="left_black_pod.jpeg" alt="FlashJoy booth" data-thumb-index="1">
-              </button>
-              <button class="thumb">
-                <img class="demo cursor" src="front_black_pod.jpeg" alt="FlashJoy booth" data-thumb-index="2">
-              </button>
-              <button class="thumb">
-                <img class="demo cursor" src="right_black_pod.jpeg" alt="FlashJoy booth" data-thumb-index="3">
-              </button>
-              <button class="thumb">
-                <img class="demo cursor" src="zoom_black_pod2.jpeg" alt="FlashJoy booth" data-thumb-index="4">
-              </button>
-              <button class="thumb">
-                <img class="demo cursor" src="zoom_black_pod.jpeg" alt="FlashJoy booth" data-thumb-index="4">
-              </button>
-            </div>
-          </div>
-
-          <!-- Lightbox (unchanged) -->
-          <div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true" aria-label="Image gallery">
-            <div class="lightbox-backdrop" data-close></div>
-            <figure class="lightbox-figure">
-              <img id="lightbox-img" src="" alt="" />
-              <figcaption id="lightbox-cap" class="sr-only"></figcaption>
-            </figure>
-            <button class="lightbox-btn prev" aria-label="Previous image" data-prev>‹</button>
-            <button class="lightbox-btn next" aria-label="Next image" data-next>›</button>
-            <button class="lightbox-btn close" aria-label="Close gallery" data-close>✕</button>
-          </div>
+        <!-- Eyebrow badge -->
+        <div class="hero-eyebrow" data-hi="eyebrow">
+          <span class="eyebrow-pulse"></span>
+          <span>London &amp; South East</span>
+          <span class="eyebrow-sep" aria-hidden="true">·</span>
+          <span>Premium Photo Experiences</span>
         </div>
-      </section>
-<!-- Features -->
-      <section id="features" class="scroll-mt-24 bg-transparent dark:bg-transparent">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white font-serif">Features</h2>
-          <p class="mt-2 max-w-2xl text-slate-600 dark:text-slate-300">Everything you need for unforgettable photos—handled by a friendly on-site host.</p>
-          <div class="mt-8 flex flex-col gap-6">
-            <!-- Feature cards -->
-            <div class="feature-card card reveal-left" data-tilt>
-  <table style="width:100%; border-collapse:collapse;">
-    <tr>
-      <td style="vertical-align:middle; width:60%; padding-right:16px;">
-        <img src="map.png" alt="Compact & tidy setup" class="card-img" / style="margin:0;display:block;">
-      </td>
-      <td style="vertical-align:middle;">
-        <div class="card-head">
-                <span class="card-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="1.5" class="h-5 w-5"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
-                </span>
-                <h3 class="card-title">Set up anywhere</h3>
-              </div>
-        <p class="card-copy">Compact footprint, fast set-up & tidy cabling. We’re venue-friendly.</p>
-      </td>
-    </tr>
-  </table>
-</div>
-            <div class="feature-card card reveal-left" data-tilt>
-  <table style="width:100%; border-collapse:collapse;">
-    <tr>
-      <td style="vertical-align:middle; width:60%; padding-right:16px;">
-        <img src="camera.png" alt="Studio-grade shots" class="card-img" / style="margin:0;display:block;">
-      </td>
-      <td style="vertical-align:middle;">
-        <div class="card-head">
-                <span class="card-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="1.5" class="h-5 w-5"><path d="M4 20V6m6 14V10m6 10V4m4 16H2"/></svg>
-                </span>
-                <h3 class="card-title">Studio-grade shots</h3>
-              </div>
-        <p class="card-copy">Pro lighting, DSLR cameras, and colour-true printing.</p>
-      </td>
-    </tr>
-  </table>
-</div>
-            <div class="feature-card card reveal-left" data-tilt>
-  <table style="width:100%; border-collapse:collapse;">
-    <tr>
-      <td style="vertical-align:middle; width:60%; padding-right:16px;">
-        <img src="prints.png" alt="Share in a snap" class="card-img" / style="margin:0;display:block;">
-      </td>
-      <td style="vertical-align:middle;">
-        <div class="card-head">
-                <span class="card-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="1.5" class="h-5 w-5"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5L12 2z"/></svg>
-                </span>
-                <h3 class="card-title">Share in a snap</h3>
-              </div>
-        <p class="card-copy">Unlimited prints plus QR/AirDrop sharing & next-day gallery.</p>
-      </td>
-    </tr>
-  </table>
-</div>
-          </div>
+
+        <!-- Headline -->
+        <h1 class="hero-headline" aria-label="Capture every joyful moment.">
+          <span class="hl-line" data-hi="line1">Capture every</span>
+          <span class="hl-line hl-em" data-hi="line2">joyful moment.</span>
+        </h1>
+
+        <!-- Sub copy -->
+        <p class="hero-sub" data-hi="sub">
+          From elegant weddings to high-energy brand activations — FlashJoy delivers
+          pro lighting, gorgeous backdrops, and instant prints to every celebration.
+        </p>
+
+        <!-- CTAs -->
+        <div class="hero-ctas" data-hi="ctas">
+          <a href="#pricing" class="btn-primary">
+            Get a quote
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#gallery" class="btn-ghost">
+            See our work
+          </a>
         </div>
-      </section>
 
-      <!-- Pricing -->
-      <section id="pricing" class="scroll-mt-24 bg-transparent dark:bg-transparent">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white font-serif">Pricing</h2>
-          <p class="mt-2 max-w-2xl text-slate-600 dark:text-slate-300">Simple, transparent packages. All options include free setup and delivery. Pod rental prices are listed for a 4 hour session, for longer rental periods prices will be agreed individually.</p>
-          <div class="mt-8 flex flex-col gap-6">
-            <div class="plan reveal-right">
-              <h3 class="plan-title">Basic</h3>
-              <p class="plan-price">£249</p>
-              <p class="plan-desc">Perfect for birthdays & small parties.</p>
-              <ul class="plan-list">
-                <li>Unlimited Prints</li>
-                <li>Guest Book</li>
-                <li>Virtual Background selection</li>
-                <li>Basic set of props</li>
-              </ul>
-              <!-- <a href="#contact" class="btn-outline">Enquire now</a> -->
-            </div>
-            <div class="plan plan-featured reveal-right">
-              <span class="badge">Most popular</span>
-              <h3 class="plan-title">Standard</h3>
-              <p class="plan-price">£299</p>
-              <p class="plan-desc">Our most popular wedding package.</p>
-              <ul class="plan-list">
-                <li>All Basic features</li>
-                <li>Custom Welcome Screen</li>
-                <li>Custom Print Layouts</li>
-              </ul>
-              <!-- <a href="#contact" class="btn-outline">Reserve your date</a> -->
-            </div>
-            <div class="plan plan-featured reveal-right">
-              <span class="badge">Recommended</span>
-              <h3 class="plan-title">Premium</h3>
-              <p class="plan-price">£349</p>
-              <p class="plan-desc">Our most premium package.</p>
-              <ul class="plan-list">
-                <li>All Standard features</li>
-                <li>Wide selection of top tier props</li>
-                <li>DSLR camera pod for studio grade picture quality</li>
-                <li>Option of full support on site throughout the rental</li>
-              </ul>
-              <!-- <a href="#contact" class="btn-outline">Reserve your date</a> -->
-            </div>
+        <!-- Stats row -->
+        <div class="hero-stats" data-hi="stats">
+          <div class="stat">
+            <span class="stat-n">500+</span>
+            <span class="stat-l">Events captured</span>
           </div>
-        </div>
-      </section>
-
-      <!-- About -->
-      <section id="about" class="scroll-mt-24 bg-transparent dark:bg-transparent">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white font-serif">Our story</h2>
-          <div class="mt-4 grid gap-6 lg:grid-cols-12">
-            <div class="lg:col-span-7 text-slate-700 dark:text-slate-300 space-y-4">
-              <p>
-                FlashJoy started with a simple idea: make it effortless for hosts to create moments guests actually remember.
-                We obsessed over flattering lighting, snappy sharing, and a service that just works—so you can enjoy your event.
-              </p>
-              <p>
-                Today we capture smiles across weddings, birthdays, corporate parties and pop-ups. We bring the pro kit, the props,
-                and the good vibes—then deliver a beautiful gallery the next day.
-              </p>
-            </div>
+          <div class="stat-divider" aria-hidden="true"></div>
+          <div class="stat">
+            <span class="stat-n">5★</span>
+            <span class="stat-l">Average rating</span>
           </div>
-        </div>
-      </section>
-
-      <!-- Contact -->
-      <section id="contact" class="scroll-mt-24 bg-transparent dark:bg-transparent">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white font-serif">Contact us</h2>
-          <p class="mt-2 max-w-2xl text-slate-600 dark:text-slate-300">Ready to party or need a custom quote? Send a note and we’ll reply shortly.</p>
-
-          <!-- <div class="mt-8 grid gap-8 lg:grid-cols-12">
-            <form id="contact-form" class="lg:col-span-7 space-y-4" novalidate>
-              <div>
-                <label for="name" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Name</label>
-                <input id="name" name="name" type="text" autocomplete="name" required class="input" />
-                <p id="err-name" class="error-msg"></p>
-              </div>
-              <div>
-                <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Email</label>
-                <input id="email" name="email" type="email" autocomplete="email" required class="input" />
-                <p id="err-email" class="error-msg"></p>
-              </div>
-              <div>
-                <label for="message" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Message</label>
-                <textarea id="message" name="message" rows="5" required class="input"></textarea>
-                <p id="err-message" class="error-msg"></p>
-              </div>
-              <div class="flex items-center justify-between">
-                <button type="submit" class="inline-flex items-center gap-2 rounded-lg" style="background: var(--brand)"><span class="px-5 py-2.5 text-sm font-semibold text-white hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-rose-500">Send message</span></button>
-                <div class="text-xs text-slate-500 dark:text-slate-400">Or email us at <a class="underline hover:text-rose-600" href="mailto:flashjoyuk@gmail.com">flashjoyuk@gmail.com</a></div>
-              </div>
-            </form> -->
-            <aside class="lg:col-span-5 space-y-4">
-              <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-950/70 p-6">
-                <!-- <h3 class="font-semibold text-slate-900 dark:text-slate-100">Follow us</h3> -->
-                <ul class="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
-                  <li><a class="hover:text-rose-600 underline" target="_blank" rel="noreferrer" href="https://www.instagram.com/flashjoy_uk/">Instagram</a></li>
-                  <li><a class="hover:text-rose-600 underline" target="_blank" rel="noreferrer" href="https://wa.me/7981817188">WhatsApp</a></li>
-                </ul>
-              </div>
-            </aside>
-          <!-- </div>  -->
-        </div>
-      </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-transparent dark:bg-transparent border-t border-slate-200 dark:border-slate-800">
-      <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-        <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div class="flex items-center gap-2">
-            <div class="h-8 w-8 grid place-items-center rounded-md">
-              <img src="Logo_basic_whiteout.png" alt="FlashJoy logo" />
-            </div>
-            <p class="text-sm text-slate-600 dark:text-slate-300">© <span id="year"></span> FlashJoy. All rights reserved.</p>
+          <div class="stat-divider" aria-hidden="true"></div>
+          <div class="stat">
+            <span class="stat-n">∞</span>
+            <span class="stat-l">Prints included</span>
           </div>
-          <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-            <li><a href="#about" class="footer-link">About</a></li>
-            <li><a href="#pricing" class="footer-link">Pricing</a></li>
-            <li><a href="#contact" class="footer-link">Contact</a></li>
-            <li><a href="#" class="footer-link">Privacy</a></li>
-            <li><a href="#" class="footer-link">Terms</a></li>
-          </ul>
         </div>
       </div>
-    </footer>
 
-    <!-- Toasts -->
-    <div id="toasts" aria-live="polite" aria-atomic="true" class="fixed bottom-4 right-4 z-50 space-y-2"></div>
+      <!-- Scroll cue -->
+      <div class="scroll-cue" data-hi="cue" aria-hidden="true">
+        <div class="scroll-cue-line"></div>
+        <span class="scroll-cue-label">Scroll</span>
+      </div>
+    </section>
 
-    <script src="./app.js"></script>
-  
-    <script>
-      const imageSize = document.querySelector('meta[name="image-size"]')?.content || '250';
-      document.querySelectorAll('.card-img').forEach(img => {
-        img.style.width = `${imageSize}px`;
-        img.style.height = `${imageSize}px`;
-        img.style.objectFit = 'cover';
-      });
-    </script>
+    <!-- ═══════════ GALLERY ═══════════ -->
+    <section id="gallery" class="section gallery-section">
+      <div class="section-inner">
 
-  
-    <script>
-      (function(){
-        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const cards = Array.from(document.querySelectorAll('.reveal-right'));
-        if (!cards.length) return;
-        if (prefersReduced){
-          cards.forEach(el => el.classList.add('in-view'));
-          return;
-        }
-        const io = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting){
-              const el = entry.target;
-              const i = cards.indexOf(el);
-              el.style.transitionDelay = `${Math.min(i * 80, 400)}ms`;
-              el.classList.add('in-view');
-              io.unobserve(el);
-            }
-          });
-        }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
-        cards.forEach(el => io.observe(el));
-      })();
-    </script>
+        <div class="section-head" data-reveal>
+          <div class="section-label">Gallery</div>
+          <h2 class="section-title">The booth,<br><em>up close.</em></h2>
+          <p class="section-sub">A peek at our premium setup — built for beauty and performance.</p>
+        </div>
 
-  </body>
+        <!-- Main viewer -->
+        <div class="gallery-wrap" data-reveal>
+          <div class="gallery-viewer" id="gallery-viewer" role="img" aria-label="Photo gallery">
+
+            <!-- Slides -->
+            <div class="gallery-slides">
+              <div class="gslide active" data-idx="0">
+                <img src="left_black_pod.jpeg" alt="FlashJoy pod — left angle" />
+              </div>
+              <div class="gslide" data-idx="1">
+                <img src="front_black_pod.jpeg" alt="FlashJoy pod — front view" />
+              </div>
+              <div class="gslide" data-idx="2">
+                <img src="right_black_pod.jpeg" alt="FlashJoy pod — right angle" />
+              </div>
+              <div class="gslide" data-idx="3">
+                <img src="zoom_black_pod2.jpeg" alt="FlashJoy pod — detail view" />
+              </div>
+              <div class="gslide" data-idx="4">
+                <img src="zoom_black_pod.jpeg" alt="FlashJoy pod — close up" />
+              </div>
+            </div>
+
+            <!-- Navigation arrows -->
+            <button class="gal-arrow gal-prev" id="gal-prev" aria-label="Previous image">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="gal-arrow gal-next" id="gal-next" aria-label="Next image">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+
+            <!-- Counter -->
+            <div class="gal-counter" id="gal-counter" aria-live="polite">1 / 5</div>
+
+            <!-- Expand hint -->
+            <div class="gal-expand-hint" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+              <span>Click to expand</span>
+            </div>
+          </div>
+
+          <!-- Thumbnail strip -->
+          <div class="gallery-thumbs" id="gallery-thumbs" role="tablist" aria-label="Gallery thumbnails">
+            <button class="gthumb active" role="tab" aria-selected="true" aria-label="View image 1" data-thumb="0">
+              <img src="left_black_pod.jpeg" alt="" loading="lazy" />
+            </button>
+            <button class="gthumb" role="tab" aria-selected="false" aria-label="View image 2" data-thumb="1">
+              <img src="front_black_pod.jpeg" alt="" loading="lazy" />
+            </button>
+            <button class="gthumb" role="tab" aria-selected="false" aria-label="View image 3" data-thumb="2">
+              <img src="right_black_pod.jpeg" alt="" loading="lazy" />
+            </button>
+            <button class="gthumb" role="tab" aria-selected="false" aria-label="View image 4" data-thumb="3">
+              <img src="zoom_black_pod2.jpeg" alt="" loading="lazy" />
+            </button>
+            <button class="gthumb" role="tab" aria-selected="false" aria-label="View image 5" data-thumb="4">
+              <img src="zoom_black_pod.jpeg" alt="" loading="lazy" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lightbox -->
+      <div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-label="Image lightbox">
+        <div class="lb-backdrop" data-lb-close></div>
+        <div class="lb-frame">
+          <img id="lb-img" src="" alt="" />
+          <button class="lb-btn lb-prev" data-lb-prev aria-label="Previous">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button class="lb-btn lb-next" data-lb-next aria-label="Next">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <button class="lb-btn lb-close" data-lb-close aria-label="Close">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ FEATURES ═══════════ -->
+    <section id="features" class="section features-section">
+      <div class="section-inner">
+
+        <div class="section-head" data-reveal>
+          <div class="section-label">Features</div>
+          <h2 class="section-title">Everything handled,<br><em>nothing left to chance.</em></h2>
+          <p class="section-sub">Your guests focus on the fun. We take care of the rest.</p>
+        </div>
+
+        <div class="features-grid">
+
+          <div class="feat-card" data-reveal data-tilt>
+            <div class="feat-top">
+              <div class="feat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+              </div>
+              <h3 class="feat-title">Set up anywhere</h3>
+              <p class="feat-copy">Compact footprint, fast setup, and tidy cabling. Venue-friendly and ready in minutes.</p>
+            </div>
+            <div class="feat-img">
+              <img src="map.png" alt="Compact setup diagram" loading="lazy" />
+            </div>
+          </div>
+
+          <div class="feat-card" data-reveal data-tilt>
+            <div class="feat-top">
+              <div class="feat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+              </div>
+              <h3 class="feat-title">Studio-grade shots</h3>
+              <p class="feat-copy">Pro lighting, DSLR cameras, and colour-true printing that captures every guest at their best.</p>
+            </div>
+            <div class="feat-img">
+              <img src="camera.png" alt="DSLR camera setup" loading="lazy" />
+            </div>
+          </div>
+
+          <div class="feat-card" data-reveal data-tilt>
+            <div class="feat-top">
+              <div class="feat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5L12 2z"/>
+                </svg>
+              </div>
+              <h3 class="feat-title">Share in a snap</h3>
+              <p class="feat-copy">Unlimited prints plus QR &amp; AirDrop sharing. Your online gallery arrives the next day.</p>
+            </div>
+            <div class="feat-img">
+              <img src="prints.png" alt="Printed photo samples" loading="lazy" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ PRICING ═══════════ -->
+    <section id="pricing" class="section pricing-section">
+      <div class="section-inner">
+
+        <div class="section-head" data-reveal>
+          <div class="section-label">Pricing</div>
+          <h2 class="section-title">Simple packages,<br><em>no surprises.</em></h2>
+          <p class="section-sub">All packages include free delivery, setup &amp; a booth attendant. Prices shown for a 4-hour session.</p>
+        </div>
+
+        <div class="pricing-grid">
+
+          <!-- Basic -->
+          <div class="price-card" data-reveal>
+            <div class="price-tier">Basic</div>
+            <div class="price-amount">
+              <sup class="price-sym">£</sup><span class="price-num">249</span>
+            </div>
+            <p class="price-desc">Perfect for birthdays &amp; small parties.</p>
+            <ul class="price-list">
+              <li>Unlimited prints</li>
+              <li>Guest book</li>
+              <li>Virtual background selection</li>
+              <li>Basic prop set</li>
+            </ul>
+            <a href="#contact" class="price-btn price-btn-outline">Enquire now</a>
+          </div>
+
+          <!-- Standard (featured) -->
+          <div class="price-card price-featured" data-reveal>
+            <div class="price-badge">Most popular</div>
+            <div class="price-tier">Standard</div>
+            <div class="price-amount">
+              <sup class="price-sym">£</sup><span class="price-num">299</span>
+            </div>
+            <p class="price-desc">Our most popular wedding package.</p>
+            <ul class="price-list">
+              <li>Everything in Basic</li>
+              <li>Custom welcome screen</li>
+              <li>Custom print layouts</li>
+            </ul>
+            <a href="#contact" class="price-btn price-btn-brand">Reserve your date</a>
+          </div>
+
+          <!-- Premium -->
+          <div class="price-card price-premium" data-reveal>
+            <div class="price-badge price-badge-gold">Recommended</div>
+            <div class="price-tier">Premium</div>
+            <div class="price-amount">
+              <sup class="price-sym">£</sup><span class="price-num">349</span>
+            </div>
+            <p class="price-desc">The ultimate FlashJoy experience.</p>
+            <ul class="price-list">
+              <li>Everything in Standard</li>
+              <li>Top-tier prop selection</li>
+              <li>DSLR camera pod</li>
+              <li>Full on-site attendant</li>
+            </ul>
+            <a href="#contact" class="price-btn price-btn-gold">Reserve your date</a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ ABOUT ═══════════ -->
+    <section id="about" class="section about-section">
+      <div class="section-inner">
+        <div class="about-layout">
+
+          <div class="about-quote" data-reveal>
+            <blockquote>
+              "Make it effortless for hosts to create moments guests actually remember."
+            </blockquote>
+          </div>
+
+          <div class="about-copy">
+            <div class="section-label" data-reveal>Our story</div>
+            <p data-reveal>
+              FlashJoy started with a simple idea: make it effortless for hosts to create moments guests
+              actually remember. We obsessed over flattering lighting, snappy sharing, and a service that
+              just works — so you can enjoy your event.
+            </p>
+            <p data-reveal>
+              Today we capture smiles across weddings, birthdays, corporate parties and pop-ups. We bring
+              the pro kit, the props, and the good vibes — then deliver a beautiful gallery the next day.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ CONTACT ═══════════ -->
+    <section id="contact" class="section contact-section">
+      <div class="section-inner">
+        <div class="contact-layout">
+
+          <div class="contact-copy">
+            <div class="section-label" data-reveal>Get in touch</div>
+            <h2 class="section-title" data-reveal>Ready to make<br><em>it happen?</em></h2>
+            <p class="section-sub" data-reveal>Tell us about your event and we'll put together a custom quote — usually within a few hours.</p>
+          </div>
+
+          <div class="contact-links" data-reveal>
+
+            <a href="https://www.instagram.com/flashjoy_uk/" class="contact-link" target="_blank" rel="noreferrer noopener">
+              <div class="cl-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                </svg>
+              </div>
+              <div class="cl-body">
+                <span class="cl-name">Instagram</span>
+                <span class="cl-handle">@flashjoy_uk</span>
+              </div>
+              <svg class="cl-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+
+            <a href="https://wa.me/7981817188" class="contact-link" target="_blank" rel="noreferrer noopener">
+              <div class="cl-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                </svg>
+              </div>
+              <div class="cl-body">
+                <span class="cl-name">WhatsApp</span>
+                <span class="cl-handle">Message us directly</span>
+              </div>
+              <svg class="cl-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+
+            <a href="mailto:flashjoyuk@gmail.com" class="contact-link">
+              <div class="cl-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </div>
+              <div class="cl-body">
+                <span class="cl-name">Email</span>
+                <span class="cl-handle">flashjoyuk@gmail.com</span>
+              </div>
+              <svg class="cl-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="Logo_basic_whiteout.png" alt="" aria-hidden="true" class="footer-logo" />
+        <span class="footer-wordmark">FlashJoy</span>
+      </div>
+      <p class="footer-copy">© <span id="year"></span> FlashJoy. All rights reserved. London &amp; South East.</p>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="#about">About</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#contact">Contact</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- GSAP -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="./app.js"></script>
+</body>
 </html>

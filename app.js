@@ -1,432 +1,362 @@
-// ---------- Config ----------
-const SECTIONS = [
-  { id: 'hero', label: 'Home' },
-  { id: 'gallery', label: 'Gallery' },
-  { id: 'features', label: 'Features' },
-  { id: 'pricing', label: 'Pricing' },
-  { id: 'about', label: 'About' },
-  { id: 'contact', label: 'Contact' },
-];
+/* ════════════════════════════════════════════════════
+   FlashJoy — App Script
+   Clean, robust, progressive-enhancement first.
+   ════════════════════════════════════════════════════ */
 
-// Shorthand qs helpers
-const $ = (sel, root=document) => root.querySelector(sel);
-const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+'use strict';
 
-// ---------- Theme (light / dark only) ----------
-const theme = {
-  get() { return localStorage.getItem('theme') || 'dark'; },
-  set(v) { localStorage.setItem('theme', v); applyTheme(); },
-};
+// ── Utilities ─────────────────────────────────────────
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-function applyTheme() {
-  const t = theme.get();
-  document.documentElement.classList.toggle('dark', t === 'dark');
-  // Update any labels
-  document.querySelectorAll('[data-theme-label]').forEach(el => {
-    el.textContent = t === 'dark' ? 'Dark' : 'Light';
-  });
+// ── Year ─────────────────────────────────────────────
+const yearEl = $('#year');
+if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+// ── Scroll progress bar ──────────────────────────────
+const progressFill = $('#progress');
+if (progressFill) {
+  const updateProgress = () => {
+    const scrolled = window.scrollY;
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    progressFill.style.width = total > 0 ? `${Math.min(100, (scrolled / total) * 100)}%` : '0%';
+  };
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
 }
-applyTheme();
 
-// ---------- Build nav (desktop + mobile) ----------
-const desktopNav = $('#desktop-nav');
-const mobileList = $('#mobile-menu ul');
-
-const linkMarkup = (id,label,cls='') =>
-  `<a href="#${id}" class="${cls} px-1 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500">${label}</a>`;
-
-function buildNav(){
-  if (!desktopNav || !mobileList) return;
-  desktopNav.innerHTML = '';
-  SECTIONS.forEach(({id,label}) => {
-    const li = document.createElement('li');
-    li.innerHTML = linkMarkup(id, label, 'nav-link text-slate-700 dark:text-slate-200');
-    desktopNav.appendChild(li);
-  });
-
-  // Theme button (desktop)
-  const themeLi = document.createElement('li');
-  themeLi.innerHTML = `<button id="theme-btn" class="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500" aria-label="Toggle color theme" title="Toggle color theme">🌓 <span data-theme-label></span></button>`;
-  desktopNav.appendChild(themeLi);
-
-  // Mobile items
-  mobileList.innerHTML = '';
-  SECTIONS.forEach(({id,label}) => {
-    const li = document.createElement('li');
-    li.setAttribute('role','none');
-    li.innerHTML = `<a role="menuitem" href="#${id}" class="nav-link-mobile block rounded-md px-3 py-2 text-sm">${label}</a>`;
-    mobileList.appendChild(li);
-  });
-  const liTheme = document.createElement('li');
-  liTheme.setAttribute('role','none');
-  liTheme.className = 'pt-2';
-  liTheme.innerHTML = `<div class="flex items-center gap-2">
-    <button id="theme-btn-mobile" class="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500">🌓 <span data-theme-label></span></button>
-  </div>`;
-  mobileList.appendChild(liTheme);
-
-  applyTheme();
+// ── Header scroll state ──────────────────────────────
+// Adds .scrolled class after user passes a small threshold,
+// enabling the glass nav background.
+const header = $('#site-header');
+if (header) {
+  let ticking = false;
+  const checkScroll = () => {
+    header.classList.toggle('scrolled', window.scrollY > 60);
+    ticking = false;
+  };
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(checkScroll); ticking = true; }
+  }, { passive: true });
+  checkScroll();
 }
-buildNav();
 
-// ---------- Mobile menu toggle ----------
-const menuBtn = $('#menu-btn');
+// ── Mobile menu ──────────────────────────────────────
+const menuBtn    = $('#menu-btn');
 const mobileMenu = $('#mobile-menu');
-if (menuBtn && mobileMenu){
+
+if (menuBtn && mobileMenu) {
+  const bars = $$('.bar', menuBtn);
+
+  function openMenu() {
+    mobileMenu.hidden = false;
+    menuBtn.setAttribute('aria-expanded', 'true');
+    if (bars[0]) bars[0].style.transform = 'translateY(7px) rotate(45deg)';
+    if (bars[1]) bars[1].style.opacity   = '0';
+    if (bars[2]) bars[2].style.transform = 'translateY(-7px) rotate(-45deg)';
+  }
+
+  function closeMenu() {
+    mobileMenu.hidden = true;
+    menuBtn.setAttribute('aria-expanded', 'false');
+    bars.forEach(b => { b.style.transform = ''; b.style.opacity = ''; });
+  }
+
   menuBtn.addEventListener('click', () => {
-    const open = !mobileMenu.classList.toggle('hidden');
-    menuBtn.setAttribute('aria-expanded', String(open));
+    mobileMenu.hidden ? openMenu() : closeMenu();
   });
-  window.addEventListener('keydown', e => { if (e.key === 'Escape') mobileMenu.classList.add('hidden'); });
-  mobileList.addEventListener('click', e => {
-    if (e.target.closest('a[href^="#"]')) mobileMenu.classList.add('hidden');
+
+  // Close when any link is tapped
+  $$('.mobile-link', mobileMenu).forEach(a => a.addEventListener('click', closeMenu));
+
+  // Close on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !mobileMenu.hidden) closeMenu();
   });
 }
 
-// Theme button clicks
-function cycleTheme(){
-  const current = theme.get();
-  theme.set(current === 'light' ? 'dark' : 'light');
-}
-document.addEventListener('click', e => {
-  if (e.target.closest('#theme-btn') || e.target.closest('#theme-btn-mobile')) cycleTheme();
+// ── Active nav highlight ─────────────────────────────
+const navLinks   = $$('.nav-link');
+const sectionIds = ['hero','gallery','features','pricing','about','contact'];
+
+const sectionIO = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const id = entry.target.id;
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === `#${id}`);
+    });
+  });
+}, { rootMargin: '-35% 0px -60% 0px' });
+
+sectionIds.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) sectionIO.observe(el);
 });
 
-// ---------- Active section highlighting & progress ----------
-const progress = $('#progress');
-const sectionEls = SECTIONS.map(s => document.getElementById(s.id)).filter(Boolean);
-const navLinks = () => $$('.nav-link');
-const navLinksMobile = () => $$('.nav-link-mobile');
-
-function updateActive(id){
-  const idx = SECTIONS.findIndex(s => s.id === id);
-  if (progress) progress.style.width = `${Math.max(0, (idx+1)/SECTIONS.length) * 100}%`;
-  const toggleStates = (a, active) => {
-    a.classList.toggle('text-sky-600', active);
-    a.classList.toggle('text-slate-700', !active);
-    a.classList.toggle('dark:text-slate-200', !active);
-  };
-  navLinks().forEach(a => toggleStates(a, a.getAttribute('href').slice(1) === id));
-  navLinksMobile().forEach(a => {
-    const active = a.getAttribute('href').slice(1) === id;
-    a.classList.toggle('bg-sky-50', active);
-    a.classList.toggle('text-sky-700', active);
-    a.classList.toggle('dark:bg-sky-900/40', active);
-    a.classList.toggle('dark:text-sky-200', active);
-  });
-}
-const io = new IntersectionObserver(entries => {
-  entries.forEach(entry => { if (entry.isIntersecting) updateActive(entry.target.id); });
-}, { rootMargin: '-40% 0px -55% 0px', threshold: [0, 0.25, 0.5, 1] });
-sectionEls.forEach(el => io.observe(el));
-
-// ---------- Simple reveal-on-view & tilt ----------
-const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-if (!prefersReduced){
-  const revealEls = $$('[data-reveal]');
-  const rio = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting){
-        entry.target.style.transition = 'opacity .6s ease, transform .6s ease';
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'none';
-        rio.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
-  revealEls.forEach(el => rio.observe(el));
-
-  $$('.feature-card[data-tilt]').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const r = card.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
-      card.style.transform = `translateY(-2px) rotateX(${ -y * 2 }deg) rotateY(${ x * 2 }deg)`;
-    });
-    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
-  });
-}else{
-  $$('[data-reveal]').forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
-}
-
-// ---------- Toasts ----------
-const toastsEl = $('#toasts');
-function addToast(msg, variant='success'){
-  const id = Math.random().toString(36).slice(2);
-  const success = variant === 'success';
-  const div = document.createElement('div');
-  div.role = 'status';
-  div.dataset.id = id;
-  div.className = `min-w-[240px] max-w-sm rounded-xl border px-4 py-3 shadow-lg backdrop-blur transition focus:outline-none focus:ring ${
-    success ? 'bg-white/90 border-emerald-200 text-emerald-800 dark:bg-emerald-900/70 dark:text-emerald-100 dark:border-emerald-800'
-            : 'bg-white/90 border-rose-200 text-rose-800 dark:bg-rose-900/70 dark:text-rose-100 dark:border-rose-800'
-  }`;
-  div.innerHTML = `<div class="flex items-start gap-3">
-    <div class="mt-1 h-2.5 w-2.5 flex-none rounded-full bg-current opacity-70" aria-hidden="true"></div>
-    <p class="text-sm leading-5">${msg}</p>
-    <button class="ml-auto rounded-md p-1 text-xs opacity-60 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500" aria-label="Close notification">✕</button>
-  </div>`;
-  div.querySelector('button').addEventListener('click', () => removeToast(id));
-  toastsEl.appendChild(div);
-  setTimeout(() => removeToast(id), 3500);
-}
-function removeToast(id){
-  const el = toastsEl.querySelector(`[data-id="${id}"]`);
-  if (el) el.remove();
-}
-
-// ---------- Form validation ----------
-const form = $('#contact-form');
-const nameEl = $('#name');
-const emailEl = $('#email');
-const msgEl = $('#message');
-const errName = $('#err-name');
-const errEmail = $('#err-email');
-const errMsg = $('#err-message');
-
-function setErr(el, errEl, msg){
-  if (msg){
-    errEl.textContent = msg;
-    errEl.classList.remove('hidden');
-    el.classList.add('border-rose-500');
-  }else{
-    errEl.classList.add('hidden');
-    el.classList.remove('border-rose-500');
-  }
-}
-function validate(){
-  let ok = true;
-  if (!nameEl.value.trim()){ setErr(nameEl, errName, 'Please enter your name.'); ok = false; } else setErr(nameEl, errName, '');
-  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value);
-  if (!emailOk){ setErr(emailEl, errEmail, 'Enter a valid email.'); ok = false; } else setErr(emailEl, errEmail, '');
-  if (msgEl.value.trim().length < 10){ setErr(msgEl, errMsg, 'Tell us a bit more (10+ chars).'); ok = false; } else setErr(msgEl, errMsg, '');
-  return ok;
-}
-if (form){
-  form.addEventListener('submit', ev => {
-    ev.preventDefault();
-    if (!validate()){ addToast("Please fix the highlighted fields.", 'error'); return; }
-    addToast("Thanks! We'll be in touch within one business day.", 'success');
-    form.reset();
-  });
-}
-
-// ---------- Year ----------
-const yearEl = $('#year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-// ---------- Smooth scroll enhancement ----------
+// ── Smooth scroll for all anchor links ──────────────
 document.addEventListener('click', e => {
   const a = e.target.closest('a[href^="#"]');
   if (!a) return;
   const id = a.getAttribute('href').slice(1);
-  if (!SECTIONS.some(s => s.id === id)) return;
-  const el = document.getElementById(id);
-  if (!el) return;
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!id) return;
+  const target = document.getElementById(id);
+  if (!target) return;
   e.preventDefault();
-  el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
 });
 
-// /* REVEAL-LEFT STAGGER */
-(function(){
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const cards = Array.from(document.querySelectorAll('.reveal-left'));
-  if (!cards.length) return;
-  if (prefersReduced){
-    cards.forEach(el => el.classList.add('in-view'));
-    return;
-  }
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting){
-        const el = entry.target;
-        const i = cards.indexOf(el);
-        el.style.transitionDelay = `${Math.min(i * 80, 400)}ms`;
-        el.classList.add('in-view');
-        io.unobserve(el);
-      }
-    });
-  }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
-  cards.forEach(el => io.observe(el));
-})();
+// ── Gallery ──────────────────────────────────────────
+(function initGallery() {
+  const slides  = $$('.gslide');
+  const thumbs  = $$('.gthumb');
+  const counter = $('#gal-counter');
+  const prevBtn = $('#gal-prev');
+  const nextBtn = $('#gal-next');
+  const viewer  = $('#gallery-viewer');
 
-// ---------- Lightweight Lightbox for #gallery ----------
-(function(){
-  const items = $$('#gallery [data-gallery]');
-  const box = $('#lightbox');
-  if (!items.length || !box) return;
+  if (!slides.length) return;
 
-  const img = $('#lightbox-img');
-  const cap = $('#lightbox-cap');
-  const prevBtn = box.querySelector('[data-prev]');
-  const nextBtn = box.querySelector('[data-next]');
-  const closeEls = box.querySelectorAll('[data-close]');
-
-  const unique = items.slice(0, 4); // first logical set for captions
-  const sources = unique.map(btn => {
-    const i = btn.querySelector('img');
-    return {
-      src: i.getAttribute('data-full') || i.currentSrc || i.src,
-      alt: i.alt || ''
-    };
-  });
-
-  let idx = 0;
-  let lastFocus = null;
-
-  function render(){
-    const {src, alt} = sources[idx];
-    img.src = src; img.alt = alt;
-    cap.textContent = alt;
-  }
-  function open(i=0){
-    lastFocus = document.activeElement;
-    idx = i; render();
-    box.classList.remove('hidden');
-    box.classList.add('open');
-    nextBtn.focus();
-    document.body.style.overflow = 'hidden';
-  }
-  function close(){
-    box.classList.add('hidden');
-    box.classList.remove('open');
-    document.body.style.overflow = '';
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
-  }
-  function next(){ idx = (idx + 1) % sources.length; render(); }
-  function prev(){ idx = (idx - 1 + sources.length) % sources.length; render(); }
-
-  items.forEach((btn, i) => {
-    const logicalIndex = i % sources.length;
-    btn.addEventListener('click', () => open(logicalIndex));
-    btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(logicalIndex); } });
-  });
-  nextBtn.addEventListener('click', next);
-  prevBtn.addEventListener('click', prev);
-  closeEls.forEach(el => el.addEventListener('click', close));
-
-  document.addEventListener('keydown', e => {
-    if (box.classList.contains('hidden')) return;
-    if (e.key === 'Escape') close();
-    if (e.key === 'ArrowRight') next();
-    if (e.key === 'ArrowLeft') prev();
-  });
-
-  // Pause the auto-scroll when focusing items for keyboard users
-  const rail = document.querySelector('.gallery-rail');
-  if (rail){
-    rail.addEventListener('focusin', () => rail.classList.add('paused'));
-    rail.addEventListener('focusout', () => rail.classList.remove('paused'));
-  }
-})();
-
-
-// ---------- Slideshow + Lightbox for #gallery ----------
-(function(){
-  const $ = (s,r=document)=>r.querySelector(s);
-  const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
-  const root = $('#gallery');
-  if (!root) return;
-
-  const slides = $$('.mySlides', root);
-  const thumbs = $$('.demo', root);
-  const captionEl = $('#caption', root);
-  const prevBtn = $('.prev', root);
-  const nextBtn = $('.next', root);
-
-  // Lightbox elements
-  const box = $('#lightbox');
-  const img = $('#lightbox-img');
-  const cap = $('#lightbox-cap');
-  const lbPrev = box?.querySelector('[data-prev]');
-  const lbNext = box?.querySelector('[data-next]');
-  const lbCloseEls = box ? box.querySelectorAll('[data-close]') : [];
-
-  // Build sources once
+  // Build source list for lightbox
   const sources = slides.map(s => {
-    const i = s.querySelector('img');
-    return { src: i.currentSrc || i.src, alt: i.alt || '' };
+    const img = s.querySelector('img');
+    return { src: img.src, alt: img.alt };
   });
 
-  let slideIndex = 1;
-  let timer = null;
-  const AUTOPLAY_MS = 4500;
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let current = 0;
+  let autoTimer = null;
+  const AUTOPLAY_MS = 5200;
 
-  function showSlides(n){
-    if (n > slides.length) slideIndex = 1;
-    if (n < 1) slideIndex = slides.length;
+  function goTo(n) {
+    const next = ((n % slides.length) + slides.length) % slides.length;
+    if (next === current) return;
 
-    slides.forEach(s => s.style.display = 'none');
-    thumbs.forEach(t => t.classList.remove('active'));
+    slides[current].classList.remove('active');
+    thumbs[current]?.classList.remove('active');
+    thumbs[current]?.setAttribute('aria-selected', 'false');
 
-    slides[slideIndex-1].style.display = 'block';
-    thumbs[slideIndex-1].classList.add('active');
-    const alt = thumbs[slideIndex-1].getAttribute('alt') || '';
-    captionEl.textContent = alt;
+    current = next;
+
+    slides[current].classList.add('active');
+    thumbs[current]?.classList.add('active');
+    thumbs[current]?.setAttribute('aria-selected', 'true');
+
+    if (counter) counter.textContent = `${current + 1} / ${slides.length}`;
   }
-  function plusSlides(n){ showSlides(slideIndex += n); restart(); }
-  function currentSlide(n){ showSlides(slideIndex = n); restart(); }
 
-  function start(){
-    if (prefersReduced) return;
-    stop();
-    timer = setInterval(() => { plusSlides(1); }, AUTOPLAY_MS);
+  function startAuto() {
+    if (reduced) return;
+    stopAuto();
+    autoTimer = setInterval(() => goTo(current + 1), AUTOPLAY_MS);
   }
-  function stop(){ if (timer) clearInterval(timer); timer = null; }
-  function restart(){ if (!prefersReduced){ stop(); start(); } }
+  function stopAuto()    { clearInterval(autoTimer); autoTimer = null; }
+  function restartAuto() { stopAuto(); startAuto(); }
 
-  // Init
-  showSlides(slideIndex);
-  start();
+  // Init: ensure first slide is active
+  slides[0].classList.add('active');
+  thumbs[0]?.classList.add('active');
+  thumbs[0]?.setAttribute('aria-selected', 'true');
 
-  // Events
-  prevBtn?.addEventListener('click', () => plusSlides(-1));
-  nextBtn?.addEventListener('click', () => plusSlides(1));
+  prevBtn?.addEventListener('click', e => { e.stopPropagation(); goTo(current - 1); restartAuto(); });
+  nextBtn?.addEventListener('click', e => { e.stopPropagation(); goTo(current + 1); restartAuto(); });
+
   thumbs.forEach((t, i) => {
-    t.addEventListener('click', () => currentSlide(i+1));
+    t.addEventListener('click', () => { goTo(i); restartAuto(); });
   });
 
-  // Pause on hover/focus for accessibility
-  const container = $('.gallery-container', root);
-  ['mouseenter','focusin','touchstart'].forEach(ev => container?.addEventListener(ev, stop, {passive:true}));
-  ['mouseleave','focusout','touchend'].forEach(ev => container?.addEventListener(ev, start, {passive:true}));
+  // Keyboard support on viewer
+  viewer?.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft')  { goTo(current - 1); restartAuto(); }
+    if (e.key === 'ArrowRight') { goTo(current + 1); restartAuto(); }
+  });
 
-  // --- Lightbox wiring ---
-  function renderLB(){
-    const s = sources[slideIndex-1];
-    img.src = s.src; img.alt = s.alt; cap.textContent = s.alt;
-  }
-  function openLB(){
-    renderLB();
-    box.classList.remove('hidden');
-    box.classList.add('open');
+  // Pause autoplay on interaction
+  const galSection = document.getElementById('gallery');
+  galSection?.addEventListener('mouseenter', stopAuto,  { passive: true });
+  galSection?.addEventListener('mouseleave', startAuto, { passive: true });
+  galSection?.addEventListener('focusin',   stopAuto,  { passive: true });
+  galSection?.addEventListener('focusout',  startAuto, { passive: true });
+
+  startAuto();
+
+  // ── Lightbox ──────────────────────────────────────
+  const lb     = $('#lightbox');
+  const lbImg  = $('#lb-img');
+  let lbIdx    = 0;
+
+  function openLightbox(idx) {
+    lbIdx = idx;
+    lbImg.src = sources[lbIdx].src;
+    lbImg.alt = sources[lbIdx].alt;
+    lb.hidden = false;
     document.body.style.overflow = 'hidden';
-    lbNext?.focus();
+    // Focus the next button for keyboard users
+    $('[data-lb-next]', lb)?.focus();
   }
-  function closeLB(){
-    box.classList.add('hidden');
-    box.classList.remove('open');
+
+  function closeLightbox() {
+    lb.hidden = true;
     document.body.style.overflow = '';
   }
-  function lbNextImg(){ slideIndex = (slideIndex % sources.length) + 1; renderLB(); }
-  function lbPrevImg(){ slideIndex = (slideIndex - 2 + sources.length) % sources.length + 1; renderLB(); }
 
-  // Open on clicking the large slide image or its wrapper
-  slides.forEach((s, i) => {
-    s.addEventListener('click', openLB);
-  });
-  thumbs.forEach((t, i) => {
-    t.addEventListener('dblclick', openLB);
+  function lbMove(dir) {
+    lbIdx = ((lbIdx + dir) % sources.length + sources.length) % sources.length;
+    lbImg.src = sources[lbIdx].src;
+    lbImg.alt = sources[lbIdx].alt;
+  }
+
+  // Click viewer (not arrow buttons) to open
+  viewer?.addEventListener('click', e => {
+    if (!e.target.closest('.gal-arrow')) openLightbox(current);
   });
 
-  lbNext?.addEventListener('click', lbNextImg);
-  lbPrev?.addEventListener('click', lbPrevImg);
-  lbCloseEls.forEach(el => el.addEventListener('click', closeLB));
+  $$('[data-lb-close]', lb).forEach(el => el.addEventListener('click', closeLightbox));
+  $('[data-lb-prev]', lb)?.addEventListener('click', () => lbMove(-1));
+  $('[data-lb-next]', lb)?.addEventListener('click', () => lbMove(1));
+
   document.addEventListener('keydown', e => {
-    if (box?.classList.contains('hidden')) return;
-    if (e.key === 'Escape') closeLB();
-    if (e.key === 'ArrowRight') lbNextImg();
-    if (e.key === 'ArrowLeft') lbPrevImg();
+    if (!lb || lb.hidden) return;
+    if (e.key === 'Escape')     closeLightbox();
+    if (e.key === 'ArrowRight') lbMove(1);
+    if (e.key === 'ArrowLeft')  lbMove(-1);
+  });
+})();
+
+// ── Feature card 3-D tilt ────────────────────────────
+// Subtle perspective tilt on hover — purely decorative.
+if (!reduced) {
+  $$('.feat-card[data-tilt]').forEach(card => {
+    let rafId = null;
+
+    card.addEventListener('mouseenter', () => {
+      card.style.transition = 'transform 0.14s ease';
+    });
+
+    card.addEventListener('mousemove', e => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width  - 0.5;
+        const y = (e.clientY - r.top)  / r.height - 0.5;
+        card.style.transform =
+          `perspective(900px) rotateX(${-y * 6}deg) rotateY(${x * 6}deg) translateY(-4px)`;
+      });
+    });
+
+    card.addEventListener('mouseleave', () => {
+      cancelAnimationFrame(rafId);
+      card.style.transition = 'transform 0.55s cubic-bezier(.22,.61,.36,1), border-color 0.3s ease, box-shadow 0.3s ease';
+      card.style.transform = '';
+      setTimeout(() => { card.style.transition = ''; }, 580);
+    });
+  });
+}
+
+// ── GSAP cinematic motion system ─────────────────────
+// CRITICAL APPROACH: use gsap.from() throughout so content is
+// naturally visible at its resting state. If GSAP fails or is
+// slow, every element is already correctly positioned and opaque.
+// Never use gsap.set({ opacity: 0 }) on hero elements.
+(function initMotion() {
+  if (typeof gsap === 'undefined') return;
+  if (reduced) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ── Hero entrance ─────────────────────────────────
+  // gsap.from() → "from" is the start state, "to" is the natural
+  // visible default. No risk of leaving content invisible.
+  const heroTL = gsap.timeline({
+    defaults: { ease: 'power3.out' },
+    delay: 0.08,
+  });
+
+  heroTL
+    .from('.hero-eyebrow', { duration: 0.9, opacity: 0, y: 18, ease: 'power2.out' }, 0)
+    .from('[data-hi="line1"]', { duration: 1.1, opacity: 0, y: 56, skewY: 1.5 }, 0.18)
+    .from('[data-hi="line2"]', { duration: 1.1, opacity: 0, y: 56, skewY: 1.5 }, 0.30)
+    .from('.hero-sub',         { duration: 0.9, opacity: 0, y: 28 }, 0.46)
+    .from('.hero-ctas',        { duration: 0.8, opacity: 0, y: 22 }, 0.58)
+    .from('.hero-stats',       { duration: 0.8, opacity: 0, y: 18 }, 0.70)
+    .from('.scroll-cue',       { duration: 0.7, opacity: 0, y: 12 }, 0.95);
+
+  // ── Ambient orb parallax on hero scroll ───────────
+  // Gentle drift — purely decorative, no content affected.
+  gsap.to('.orb-violet', {
+    y: '-18%',
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '.hero',
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 2,
+    },
+  });
+  gsap.to('.orb-rose', {
+    y: '-12%',
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '.hero',
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 2.5,
+    },
+  });
+
+  // ── Scroll-triggered reveals ──────────────────────
+  // IMPORTANT: immediateRender: false prevents GSAP from applying
+  // the "from" state (opacity:0) before the scroll trigger fires.
+  // Without this, elements below the viewport start invisible and
+  // can get stuck if the trigger never fires cleanly.
+
+  function revealFrom(el, fromVars, triggerOpts = {}) {
+    gsap.from(el, {
+      ...fromVars,
+      immediateRender: false,       // do NOT hide element until trigger fires
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 88%',
+        once: true,
+        ...triggerOpts,
+      },
+    });
+  }
+
+  // Gallery wrap
+  const galleryWrap = $('.gallery-wrap');
+  if (galleryWrap) revealFrom(galleryWrap, { duration: 1.0, opacity: 0, y: 48, ease: 'power3.out' });
+
+  // Section headings
+  $$('.section-head[data-reveal]').forEach(el => {
+    revealFrom(el, { duration: 0.9, opacity: 0, y: 40, ease: 'power3.out' });
+  });
+
+  // Generic [data-reveal] — exclude elements that have dedicated animations below
+  $$('[data-reveal]:not(.section-head):not(.gallery-wrap):not(.feat-card):not(.price-card):not(.contact-link)').forEach(el => {
+    revealFrom(el, { duration: 0.85, opacity: 0, y: 30, ease: 'power3.out' });
+  });
+
+  // ── Feature cards — staggered rise ────────────────
+  // Each card is animated individually with a stagger delay.
+  // Excluded from [data-reveal] loop above to avoid duplicate tweens.
+  $$('.feat-card').forEach((card, i) => {
+    revealFrom(card,
+      { duration: 0.95, opacity: 0, y: 50, ease: 'power3.out', delay: i * 0.13 },
+    );
+  });
+
+  // ── Pricing cards ─────────────────────────────────
+  $$('.price-card').forEach((card, i) => {
+    revealFrom(card,
+      { duration: 0.95, opacity: 0, y: 48, ease: 'power3.out', delay: i * 0.10 },
+    );
+  });
+
+  // ── Contact links ─────────────────────────────────
+  $$('.contact-link').forEach((link, i) => {
+    revealFrom(link,
+      { duration: 0.8, opacity: 0, x: 28, ease: 'power3.out', delay: i * 0.10 },
+    );
   });
 })();
