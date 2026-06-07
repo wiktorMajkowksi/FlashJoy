@@ -31,8 +31,10 @@ const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!btn) return;
   btn.addEventListener('click', () => {
     const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    root.classList.add('theme-transitioning');
     applyTheme(next);
     localStorage.setItem('fj-theme', next);
+    setTimeout(() => root.classList.remove('theme-transitioning'), 650);
   });
 })();
 
