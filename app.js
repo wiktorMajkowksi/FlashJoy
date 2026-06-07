@@ -10,6 +10,32 @@ const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// ── Theme toggle ─────────────────────────────────────
+(function initTheme() {
+  const root = document.documentElement;
+  const btn  = document.getElementById('theme-toggle');
+  const saved = localStorage.getItem('fj-theme');
+
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      root.setAttribute('data-theme', 'light');
+      if (btn) btn.setAttribute('aria-label', 'Switch to dark theme');
+    } else {
+      root.removeAttribute('data-theme');
+      if (btn) btn.setAttribute('aria-label', 'Switch to light theme');
+    }
+  }
+
+  applyTheme(saved || 'dark');
+
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    localStorage.setItem('fj-theme', next);
+  });
+})();
+
 // ── Year ─────────────────────────────────────────────
 const yearEl = $('#year');
 if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -273,13 +299,13 @@ if (!reduced) {
   });
 
   heroTL
-    .from('.hero-eyebrow', { duration: 0.9, opacity: 0, y: 18, ease: 'power2.out' }, 0)
-    .from('[data-hi="line1"]', { duration: 1.1, opacity: 0, y: 56, skewY: 1.5 }, 0.18)
-    .from('[data-hi="line2"]', { duration: 1.1, opacity: 0, y: 56, skewY: 1.5 }, 0.30)
-    .from('.hero-sub',         { duration: 0.9, opacity: 0, y: 28 }, 0.46)
-    .from('.hero-ctas',        { duration: 0.8, opacity: 0, y: 22 }, 0.58)
-    .from('.hero-stats',       { duration: 0.8, opacity: 0, y: 18 }, 0.70)
-    .from('.scroll-cue',       { duration: 0.7, opacity: 0, y: 12 }, 0.95);
+    .from('.hero-eyebrow', { duration: 0.9, opacity: 0, y: 16, ease: 'power2.out' }, 0)
+    .from('[data-hi="line1"]', { duration: 1.0, opacity: 0, y: 40, ease: 'power3.out' }, 0.16)
+    .from('[data-hi="line2"]', { duration: 1.0, opacity: 0, y: 40, ease: 'power3.out' }, 0.28)
+    .from('.hero-sub',         { duration: 0.9, opacity: 0, y: 24 }, 0.44)
+    .from('.hero-ctas',        { duration: 0.8, opacity: 0, y: 20 }, 0.56)
+    .from('.hero-stats',       { duration: 0.8, opacity: 0, y: 16 }, 0.68)
+    .from('.scroll-cue',       { duration: 0.7, opacity: 0, y: 10 }, 0.92);
 
   // ── Ambient orb parallax on hero scroll ───────────
   // Gentle drift — purely decorative, no content affected.
@@ -333,7 +359,7 @@ if (!reduced) {
   });
 
   // Generic [data-reveal] — exclude elements that have dedicated animations below
-  $$('[data-reveal]:not(.section-head):not(.gallery-wrap):not(.feat-card):not(.price-card):not(.contact-link)').forEach(el => {
+  $$('[data-reveal]:not(.section-head):not(.gallery-wrap):not(.feat-card):not(.price-card):not(.contact-link):not(.addon-section)').forEach(el => {
     revealFrom(el, { duration: 0.85, opacity: 0, y: 30, ease: 'power3.out' });
   });
 
@@ -346,10 +372,18 @@ if (!reduced) {
     );
   });
 
-  // ── Pricing cards ─────────────────────────────────
+  // ── Pricing / package cards ────────────────────────
   $$('.price-card').forEach((card, i) => {
     revealFrom(card,
-      { duration: 0.95, opacity: 0, y: 48, ease: 'power3.out', delay: i * 0.10 },
+      { duration: 0.95, opacity: 0, y: 44, ease: 'power3.out', delay: i * 0.08 },
+    );
+  });
+
+  // ── Add-on cards ───────────────────────────────────
+  $$('.addon-card').forEach((card, i) => {
+    revealFrom(card,
+      { duration: 0.75, opacity: 0, y: 28, ease: 'power3.out', delay: i * 0.06 },
+      { start: 'top 92%' },
     );
   });
 
