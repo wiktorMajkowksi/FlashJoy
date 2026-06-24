@@ -306,7 +306,7 @@ if (!reduced) {
     .from('[data-hi="line2"]', { duration: 1.0, opacity: 0, y: 40, ease: 'power3.out' }, 0.28)
     .from('.hero-sub',         { duration: 0.9, opacity: 0, y: 24 }, 0.44)
     .from('.hero-ctas',        { duration: 0.8, opacity: 0, y: 20 }, 0.56)
-    .from('.hero-stats',       { duration: 0.8, opacity: 0, y: 16 }, 0.68)
+    .from('.trust-row',        { duration: 0.8, opacity: 0, y: 16 }, 0.68)
     .from('.scroll-cue',       { duration: 0.7, opacity: 0, y: 10 }, 0.92);
 
   // ── Ambient orb parallax on hero scroll ───────────

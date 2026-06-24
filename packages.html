@@ -4,13 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Packages &amp; Pricing — FlashJoy</title>
-  <meta name="description" content="Choose your FlashJoy photobooth package. Wedding packages from £349.99, standard hire from £249.99. Free delivery, setup & attendant included." />
+  <meta name="description" content="FlashJoy photo booth packages from £249.99. Digital pods, print pods, DSLR options and full photo booth hire. Delivery, setup and attendant included." />
   <link rel="icon" type="image/png" href="Logo_basic.png" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="./styles.css" />
 </head>
@@ -34,7 +34,7 @@
           <li><a href="#pricing"            class="nav-link active">Packages</a></li>
           <li><a href="about.html"          class="nav-link">About</a></li>
           <li><a href="about.html#contact"  class="nav-link">Contact</a></li>
-          <li><a href="#pricing"            class="nav-cta-pill">Book now</a></li>
+          <li><a href="about.html#contact"  class="nav-cta-pill">Check availability</a></li>
         </ul>
       </nav>
 
@@ -58,7 +58,7 @@
         <li><a href="#pricing"            class="mobile-link">Packages</a></li>
         <li><a href="about.html"          class="mobile-link">About</a></li>
         <li><a href="about.html#contact"  class="mobile-link">Contact</a></li>
-        <li><a href="#pricing"            class="mobile-link is-cta">Book now</a></li>
+        <li><a href="about.html#contact"  class="mobile-link is-cta">Check availability</a></li>
       </ul>
     </div>
   </header>
@@ -74,154 +74,273 @@
     <section id="pricing" class="section pricing-section">
       <div class="section-inner">
 
+        <!-- Page header -->
         <div class="section-head" data-reveal>
           <div class="section-label">Packages</div>
-          <h2 class="section-title">Find your<br><em>perfect package.</em></h2>
-          <p class="section-sub">Free delivery, setup &amp; a dedicated booth attendant included with every booking.</p>
+          <h2 class="section-title">Simple pricing,<br><em>no surprises.</em></h2>
+          <p class="section-sub">Free delivery, setup and a dedicated booth attendant included with every booking.</p>
         </div>
 
-        <!-- ── Wedding Packages ── -->
-        <div class="pkg-group">
-          <div class="pkg-group-header" data-reveal>
-            <div class="pkg-group-title">
-              <svg class="pkg-group-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-              Wedding Packages
+        <!-- Sub-navigation -->
+        <nav class="pkg-subnav" aria-label="Package categories">
+          <a href="#pods"        class="pkg-subnav-link">Pods</a>
+          <a href="#photo-booth" class="pkg-subnav-link">Photo Booth</a>
+          <a href="#addons"      class="pkg-subnav-link">Add-Ons</a>
+        </nav>
+
+        <!-- ══════════ PODS SUB-SECTION ══════════ -->
+        <div class="pkg-subsection" id="pods">
+
+          <div class="pkg-subsection-head" data-reveal>
+            <h3 class="pkg-subsection-title">Pods</h3>
+            <p class="pkg-subsection-sub">Sleek, compact and venue-friendly. Available in Selfie, Vintage and DSLR variants — with or without prints.</p>
+          </div>
+
+          <!-- Pod gallery — real booth photos -->
+          <div class="pkg-gallery" id="gallery" data-reveal>
+            <div class="gallery-viewer" id="gallery-viewer" role="img" aria-label="Pod photo gallery">
+
+              <div class="gallery-slides">
+                <div class="gslide active" data-idx="0">
+                  <img src="left_black_pod.jpeg" alt="FlashJoy pod — left angle" />
+                </div>
+                <div class="gslide" data-idx="1">
+                  <img src="front_black_pod.jpeg" alt="FlashJoy pod — front view" />
+                </div>
+                <div class="gslide" data-idx="2">
+                  <img src="right_black_pod.jpeg" alt="FlashJoy pod — right angle" />
+                </div>
+                <div class="gslide" data-idx="3">
+                  <img src="zoom_black_pod2.jpeg" alt="FlashJoy pod — detail view" />
+                </div>
+                <div class="gslide" data-idx="4">
+                  <img src="zoom_black_pod.jpeg" alt="FlashJoy pod — close up" />
+                </div>
+              </div>
+
+              <button class="gal-arrow gal-prev" id="gal-prev" aria-label="Previous image">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <button class="gal-arrow gal-next" id="gal-next" aria-label="Next image">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+
+              <div class="gal-counter" id="gal-counter" aria-live="polite">1 / 5</div>
+
+              <div class="gal-expand-hint" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                <span>Click to expand</span>
+              </div>
             </div>
-            <div class="pkg-incl-note">
-              <span class="pkg-incl-label">Every wedding package includes:</span>
-              <span class="pkg-incl-items">Unlimited Prints (6×2) · Audio Guest Book · Props · Custom Tap To Start Screen · USB Stick · Digital Backgrounds</span>
+
+            <div class="gallery-thumbs" id="gallery-thumbs" role="tablist" aria-label="Gallery thumbnails">
+              <button class="gthumb active" role="tab" aria-selected="true" aria-label="View image 1" data-thumb="0">
+                <img src="left_black_pod.jpeg" alt="" loading="lazy" />
+              </button>
+              <button class="gthumb" role="tab" aria-selected="false" aria-label="View image 2" data-thumb="1">
+                <img src="front_black_pod.jpeg" alt="" loading="lazy" />
+              </button>
+              <button class="gthumb" role="tab" aria-selected="false" aria-label="View image 3" data-thumb="2">
+                <img src="right_black_pod.jpeg" alt="" loading="lazy" />
+              </button>
+              <button class="gthumb" role="tab" aria-selected="false" aria-label="View image 4" data-thumb="3">
+                <img src="zoom_black_pod2.jpeg" alt="" loading="lazy" />
+              </button>
+              <button class="gthumb" role="tab" aria-selected="false" aria-label="View image 5" data-thumb="4">
+                <img src="zoom_black_pod.jpeg" alt="" loading="lazy" />
+              </button>
             </div>
           </div>
 
-          <div class="pricing-grid">
-
-            <div class="price-card wedding-card" data-reveal>
-              <div class="price-tier">Selfie Pod / Vintage Pod</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">349</span><span class="price-dec">.99</span>
+          <!-- ── Wedding Pods ── -->
+          <div class="pkg-group">
+            <div class="pkg-group-header" data-reveal>
+              <div class="pkg-group-title">
+                <svg class="pkg-group-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                Wedding Pod Packages
               </div>
-              <p class="price-desc">Sleek modern or vintage-styled pod with touch screen and instant prints — a timeless choice.</p>
-              <a href="about.html#contact" class="price-btn price-btn-outline">Enquire now</a>
+              <div class="pkg-incl-note">
+                <span class="pkg-incl-label">Every wedding package includes:</span>
+                <span class="pkg-incl-items">Unlimited Prints (6×2) · Audio Guest Book · Props · Custom Tap To Start Screen · USB Stick · Digital Backgrounds</span>
+              </div>
             </div>
 
-            <div class="price-card wedding-card price-featured" data-reveal>
-              <div class="price-badge">Most Popular</div>
-              <div class="price-tier">Vintage Pod DSLR</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">399</span><span class="price-dec">.99</span>
+            <div class="pricing-grid">
+
+              <div class="price-card wedding-card price-featured" data-reveal>
+                <div class="price-badge">Most Popular</div>
+                <div class="price-tier">Selfie Pod / Vintage Pod</div>
+                <div class="price-best-for">Best for weddings, anniversaries &amp; milestone events</div>
+                <div class="price-amount">
+                  <sup class="price-sym">£</sup><span class="price-num">349</span><span class="price-dec">.99</span>
+                </div>
+                <p class="price-desc">Sleek modern or vintage-styled pod with touch screen and instant 6×2 prints throughout your day.</p>
+                <a href="about.html#contact" class="price-btn price-btn-brand">Check availability</a>
               </div>
-              <p class="price-desc">DSLR camera upgrade for studio-quality portraits — stunning results on your big day.</p>
-              <a href="about.html#contact" class="price-btn price-btn-brand">Reserve your date</a>
+
+              <div class="price-card wedding-card price-premium" data-reveal>
+                <div class="price-badge price-badge-gold">Premium</div>
+                <div class="price-tier">Vintage Pod DSLR</div>
+                <div class="price-best-for">Best for premium weddings &amp; brand events</div>
+                <div class="price-amount">
+                  <sup class="price-sym">£</sup><span class="price-num">399</span><span class="price-dec">.99</span>
+                </div>
+                <p class="price-desc">DSLR camera upgrade for studio-quality portraits — the sharpest option for your most important day.</p>
+                <a href="about.html#contact" class="price-btn price-btn-gold">Check availability</a>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ── Standard / Digital Pods ── -->
+          <div class="pkg-group">
+            <div class="pkg-group-header" data-reveal>
+              <div class="pkg-group-title">Standard Hire &amp; Digital</div>
             </div>
 
-            <div class="price-card wedding-card price-premium" data-reveal>
-              <div class="price-badge price-badge-gold">Premium</div>
-              <div class="price-tier">Photo Booth</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">449</span><span class="price-dec">.99</span>
-              </div>
-              <p class="price-desc">Full enclosed booth experience — the ultimate statement piece for your reception.</p>
-              <a href="about.html#contact" class="price-btn price-btn-gold">Reserve your date</a>
-            </div>
+            <div class="pricing-grid standard-grid">
 
+              <div class="price-card" data-reveal>
+                <div class="price-tier">Selfie Pod Digital</div>
+                <div class="price-best-for">Best for casual parties &amp; quick sharing</div>
+                <div class="price-amount">
+                  <sup class="price-sym">£</sup><span class="price-num">249</span><span class="price-dec">.99</span>
+                </div>
+                <p class="price-desc">Instant digital sharing via QR code — no prints, full digital gallery experience.</p>
+                <a href="about.html#contact" class="price-btn price-btn-outline">Check availability</a>
+              </div>
+
+              <div class="price-card" data-reveal>
+                <div class="price-tier">Vintage Pod Digital</div>
+                <div class="price-best-for">Best for events wanting a retro aesthetic</div>
+                <div class="price-amount">
+                  <sup class="price-sym">£</sup><span class="price-num">249</span><span class="price-dec">.99</span>
+                </div>
+                <p class="price-desc">Vintage styling with modern digital sharing — a timeless look, instant delivery to guests.</p>
+                <a href="about.html#contact" class="price-btn price-btn-outline">Check availability</a>
+              </div>
+
+              <div class="price-card" data-reveal>
+                <div class="price-tier">Selfie Pod</div>
+                <div class="price-best-for">Best for birthdays, proms &amp; private parties</div>
+                <div class="price-amount">
+                  <sup class="price-sym">£</sup><span class="price-num">299</span><span class="price-dec">.99</span>
+                </div>
+                <p class="price-desc">4-hour hire with a sleek modern pod and unlimited 6×2 prints throughout.</p>
+                <ul class="price-list">
+                  <li>4 hrs hire</li>
+                  <li>Unlimited prints</li>
+                </ul>
+                <a href="about.html#contact" class="price-btn price-btn-outline">Check availability</a>
+              </div>
+
+              <div class="price-card price-featured" data-reveal>
+                <div class="price-badge">Best Value</div>
+                <div class="price-tier">Vintage Pod</div>
+                <div class="price-best-for">Best for all-occasion hire with a retro touch</div>
+                <div class="price-amount">
+                  <sup class="price-sym">£</sup><span class="price-num">299</span><span class="price-dec">.99</span>
+                </div>
+                <p class="price-desc">Retro-chic style with modern print quality — a crowd favourite at any kind of event.</p>
+                <ul class="price-list">
+                  <li>4 hrs hire</li>
+                  <li>Unlimited prints</li>
+                </ul>
+                <a href="about.html#contact" class="price-btn price-btn-brand">Check availability</a>
+              </div>
+
+              <div class="price-card" data-reveal>
+                <div class="price-tier">Vintage Pod DSLR</div>
+                <div class="price-best-for">Best for events wanting superior image quality</div>
+                <div class="price-amount">
+                  <sup class="price-sym">£</sup><span class="price-num">349</span><span class="price-dec">.99</span>
+                </div>
+                <p class="price-desc">DSLR camera in a vintage pod — sharper images and richer colour for any occasion.</p>
+                <ul class="price-list">
+                  <li>4 hrs hire</li>
+                  <li>Unlimited prints</li>
+                  <li>DSLR camera</li>
+                </ul>
+                <a href="about.html#contact" class="price-btn price-btn-outline">Check availability</a>
+              </div>
+
+            </div>
           </div>
         </div>
 
-        <!-- ── Standard / Digital Packages ── -->
-        <div class="pkg-group">
-          <div class="pkg-group-header" data-reveal>
-            <div class="pkg-group-title">Standard Hire &amp; Digital Packages</div>
+        <!-- ══════════ PHOTO BOOTH SUB-SECTION ══════════ -->
+        <div class="pkg-subsection" id="photo-booth">
+
+          <div class="pkg-subsection-head" data-reveal>
+            <h3 class="pkg-subsection-title">Photo Booth</h3>
+            <p class="pkg-subsection-sub">The full enclosed experience — maximum impact and energy. The statement piece for any event.</p>
           </div>
 
-          <div class="pricing-grid standard-grid">
-
-            <div class="price-card" data-reveal>
-              <div class="price-tier">Selfie Pod Digital</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">249</span><span class="price-dec">.99</span>
+          <!-- ── Wedding Photo Booth ── -->
+          <div class="pkg-group">
+            <div class="pkg-group-header" data-reveal>
+              <div class="pkg-group-title">
+                <svg class="pkg-group-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                Wedding Photo Booth
               </div>
-              <p class="price-desc">Instant digital sharing — no prints, full QR &amp; AirDrop experience.</p>
-              <a href="about.html#contact" class="price-btn price-btn-outline">Enquire now</a>
+              <div class="pkg-incl-note">
+                <span class="pkg-incl-label">Every wedding package includes:</span>
+                <span class="pkg-incl-items">Unlimited Prints (6×2) · Audio Guest Book · Props · Custom Tap To Start Screen · USB Stick · Digital Backgrounds</span>
+              </div>
             </div>
 
-            <div class="price-card" data-reveal>
-              <div class="price-tier">Vintage Pod Digital</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">249</span><span class="price-dec">.99</span>
+            <div class="pricing-grid two-col-grid">
+              <div class="price-card wedding-card price-premium" data-reveal>
+                <div class="price-badge price-badge-gold">Premium</div>
+                <div class="price-tier">Photo Booth — Wedding</div>
+                <div class="price-best-for">Best for wedding receptions wanting the full booth experience</div>
+                <div class="price-amount">
+                  <sup class="price-sym">£</sup><span class="price-num">449</span><span class="price-dec">.99</span>
+                </div>
+                <p class="price-desc">Full enclosed booth — the ultimate centrepiece for your reception with every feature included.</p>
+                <a href="about.html#contact" class="price-btn price-btn-gold">Check availability</a>
               </div>
-              <p class="price-desc">Vintage styling meets modern digital sharing — timeless look, instant delivery.</p>
-              <a href="about.html#contact" class="price-btn price-btn-outline">Enquire now</a>
             </div>
-
-            <div class="price-card" data-reveal>
-              <div class="price-tier">Selfie Pod</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">299</span><span class="price-dec">.99</span>
-              </div>
-              <p class="price-desc">4-hour hire with unlimited prints and a sleek modern pod.</p>
-              <ul class="price-list">
-                <li>4 hrs hire</li>
-                <li>Unlimited prints</li>
-              </ul>
-              <a href="about.html#contact" class="price-btn price-btn-outline">Enquire now</a>
-            </div>
-
-            <div class="price-card price-featured" data-reveal>
-              <div class="price-badge">Best Value</div>
-              <div class="price-tier">Vintage Pod</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">299</span><span class="price-dec">.99</span>
-              </div>
-              <p class="price-desc">Retro-chic style with modern print quality — a crowd favourite.</p>
-              <ul class="price-list">
-                <li>4 hrs hire</li>
-                <li>Unlimited prints</li>
-              </ul>
-              <a href="about.html#contact" class="price-btn price-btn-brand">Reserve your date</a>
-            </div>
-
-            <div class="price-card" data-reveal>
-              <div class="price-tier">Vintage Pod DSLR</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">349</span><span class="price-dec">.99</span>
-              </div>
-              <p class="price-desc">DSLR camera in a vintage pod — superior image quality for any occasion.</p>
-              <ul class="price-list">
-                <li>4 hrs hire</li>
-                <li>Unlimited prints</li>
-                <li>DSLR camera</li>
-              </ul>
-              <a href="about.html#contact" class="price-btn price-btn-outline">Enquire now</a>
-            </div>
-
-            <div class="price-card" data-reveal>
-              <div class="price-tier">Photo Booth</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">399</span><span class="price-dec">.99</span>
-              </div>
-              <p class="price-desc">Full enclosed booth — maximum fun and maximum energy for any event.</p>
-              <ul class="price-list">
-                <li>4 hrs hire</li>
-                <li>Unlimited prints</li>
-                <li>Enclosed booth</li>
-              </ul>
-              <a href="about.html#contact" class="price-btn price-btn-outline">Enquire now</a>
-            </div>
-
           </div>
+
+          <!-- ── Standard Photo Booth ── -->
+          <div class="pkg-group">
+            <div class="pkg-group-header" data-reveal>
+              <div class="pkg-group-title">Standard Hire</div>
+            </div>
+
+            <div class="pricing-grid two-col-grid">
+              <div class="price-card" data-reveal>
+                <div class="price-tier">Photo Booth</div>
+                <div class="price-best-for">Best for parties, proms &amp; corporate activations</div>
+                <div class="price-amount">
+                  <sup class="price-sym">£</sup><span class="price-num">399</span><span class="price-dec">.99</span>
+                </div>
+                <p class="price-desc">Full enclosed booth — maximum energy and the most memorable setup for any high-energy event.</p>
+                <ul class="price-list">
+                  <li>4 hrs hire</li>
+                  <li>Unlimited prints</li>
+                  <li>Enclosed booth</li>
+                </ul>
+                <a href="about.html#contact" class="price-btn price-btn-outline">Check availability</a>
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        <!-- ── Add-Ons ── -->
-        <div class="addon-section" data-reveal>
+        <!-- ══════════ ADD-ONS ══════════ -->
+        <div class="addon-section" data-reveal id="addons">
           <div class="pkg-group-header">
             <div class="pkg-group-title">Add-Ons</div>
-            <p class="section-sub" style="margin-top:0">Enhance your experience with any of the following extras.</p>
+            <p class="section-sub" style="margin-top:0">Enhance your package with any of the following extras.</p>
           </div>
           <div class="addon-grid">
 
             <div class="addon-card">
               <div class="addon-price">£30</div>
               <div class="addon-name">Audio Guest Book</div>
+              <div class="addon-note">Let guests record a voice message to keep forever.</div>
             </div>
 
             <div class="addon-card">
@@ -233,27 +352,31 @@
             <div class="addon-card">
               <div class="addon-price">£15</div>
               <div class="addon-name">Custom Tap To Start Screen &amp; Prints</div>
+              <div class="addon-note">Personalised screen and print template for your event.</div>
             </div>
 
             <div class="addon-card">
               <div class="addon-price">£25</div>
               <div class="addon-name">USB Stick</div>
+              <div class="addon-note">All photos delivered on a USB stick after the event.</div>
             </div>
 
             <div class="addon-card">
               <div class="addon-price">£60</div>
               <div class="addon-name">Photobook</div>
+              <div class="addon-note">A printed keepsake book of highlights from the night.</div>
             </div>
 
             <div class="addon-card">
               <div class="addon-price">£50</div>
               <div class="addon-name">Bigger Prints</div>
+              <div class="addon-note">Upgrade from 6×2 to larger format prints.</div>
             </div>
 
             <div class="addon-card addon-card-wide">
               <div class="addon-price">£50 <span>/ additional hour</span></div>
               <div class="addon-name">Extra Hours</div>
-              <div class="addon-note">If you don't want the party to end, add extra hours to your photo booth experience. Each additional hour is charged at £50.00.</div>
+              <div class="addon-note">Keep the fun going — add extra hours at £50 per hour. Just let us know when booking.</div>
             </div>
 
           </div>
@@ -261,6 +384,23 @@
 
       </div>
     </section>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-label="Image lightbox">
+      <div class="lb-backdrop" data-lb-close></div>
+      <div class="lb-frame">
+        <img id="lb-img" src="" alt="" />
+        <button class="lb-btn lb-prev" data-lb-prev aria-label="Previous">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="lb-btn lb-next" data-lb-next aria-label="Next">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <button class="lb-btn lb-close" data-lb-close aria-label="Close">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
 
   </main>
 
@@ -271,11 +411,12 @@
         <img src="Logo_basic_whiteout.png" alt="" aria-hidden="true" class="footer-logo" />
         <span class="footer-wordmark">FlashJoy</span>
       </div>
-      <p class="footer-copy">© <span id="year"></span> FlashJoy. All rights reserved. London &amp; South East.</p>
+      <p class="footer-copy">© <span id="year"></span> FlashJoy. Photo booth hire for weddings, parties and events across the UK.</p>
       <nav class="footer-nav" aria-label="Footer">
         <a href="about.html">About</a>
         <a href="packages.html">Packages</a>
         <a href="about.html#contact">Contact</a>
+        <!-- TODO: add privacy.html and terms.html pages, then update these links -->
         <a href="#">Privacy</a>
         <a href="#">Terms</a>
       </nav>
