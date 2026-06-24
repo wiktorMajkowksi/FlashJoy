@@ -396,3 +396,76 @@ if (!reduced) {
     );
   });
 })();
+
+// ── Premium scroll transition (hero → gallery) ───────
+(function initScrollTransition() {
+  if (reduced) return;
+
+  const wrapper     = document.querySelector('.scroll-transition-wrapper');
+  const heroContent = document.getElementById('heroContent');
+  const scrollCue   = document.querySelector('.scroll-transition-wrapper .scroll-cue');
+  const gallery     = document.getElementById('gallery');
+  if (!wrapper || !heroContent || !gallery) return;
+
+  function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+
+  // Set initial gallery state — hidden until transition reveals it.
+  // These inline styles are intentionally set here so non-JS visitors
+  // see the gallery normally (no CSS hides it by default).
+  gallery.style.opacity   = '0';
+  gallery.style.transform = 'translateY(120px)';
+  gallery.style.filter    = 'blur(12px)';
+
+  let rafPending = false;
+
+  function tick() {
+    rafPending = false;
+
+    const scrollY   = window.scrollY;
+    const vh        = window.innerHeight;
+    const progress  = scrollY / vh;   // 0 at top, increases as user scrolls
+
+    // ── Hero: zoom + fade + blur ────────────────────
+    const scale     = 1 + progress * 3.5;
+    const heroFade  = clamp((progress - 0.35) / 0.35, 0, 1);
+    const heroOp    = 1 - heroFade;
+    const heroBlur  = heroFade * 20;
+
+    heroContent.style.transform = `scale(${scale})`;
+    heroContent.style.opacity   = heroOp;
+    heroContent.style.filter    = heroBlur > 0 ? `blur(${heroBlur.toFixed(2)}px)` : '';
+
+    if (scrollCue) scrollCue.style.opacity = heroOp;
+
+    // ── Gallery: fade in + slide up + de-blur ───────
+    // Deliberately only starts after hero is well into its fade
+    const gp      = clamp((progress - 0.78) / 0.22, 0, 1);
+    const galY    = 120 - gp * 120;
+    const galBlur = (1 - gp) * 12;
+
+    gallery.style.opacity   = gp;
+    gallery.style.transform = galY > 0 ? `translateY(${galY.toFixed(2)}px)` : '';
+    gallery.style.filter    = galBlur > 0 ? `blur(${galBlur.toFixed(2)}px)` : '';
+
+    // ── Animated background glows ───────────────────
+    const g1x = 18 + progress * 10;
+    const g1y = 22 + Math.sin(progress * Math.PI) * 10;
+    const g2x = 82 - progress * 12;
+    const g2y = 78 - Math.sin(progress * Math.PI) * 12;
+    const g3x = 50 + Math.sin(progress * Math.PI * 1.4) * 12;
+    const g3y = 105 - progress * 22;
+
+    wrapper.style.setProperty('--glow1-x', `${g1x.toFixed(2)}%`);
+    wrapper.style.setProperty('--glow1-y', `${g1y.toFixed(2)}%`);
+    wrapper.style.setProperty('--glow2-x', `${g2x.toFixed(2)}%`);
+    wrapper.style.setProperty('--glow2-y', `${g2y.toFixed(2)}%`);
+    wrapper.style.setProperty('--glow3-x', `${g3x.toFixed(2)}%`);
+    wrapper.style.setProperty('--glow3-y', `${g3y.toFixed(2)}%`);
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!rafPending) { rafPending = true; requestAnimationFrame(tick); }
+  }, { passive: true });
+
+  tick(); // Initialise at current scroll position
+}());

@@ -1500,3 +1500,71 @@ a   { text-decoration: none; color: inherit; }
   }
   html { scroll-behavior: auto; }
 }
+
+/* ─── 16. SCROLL TRANSITION ──────────────────────── */
+.scroll-transition-wrapper {
+  position: relative;
+  /* min-height gives the scroll distance for the cinematic transition,
+     but expands if gallery content is taller */
+  min-height: 320vh;
+  /* Animated radial glows driven by --glow* custom properties via JS */
+  background:
+    radial-gradient(circle at var(--glow1-x, 18%) var(--glow1-y, 22%), rgba(89,0,106,0.55), transparent 34%),
+    radial-gradient(circle at var(--glow2-x, 82%) var(--glow2-y, 78%), rgba(255,55,105,0.34), transparent 32%),
+    radial-gradient(circle at var(--glow3-x, 50%) var(--glow3-y, 105%), rgba(255,168,85,0.18), transparent 38%),
+    var(--bg);
+}
+
+/* Hero becomes sticky for the duration of the wrapper scroll */
+.scroll-transition-wrapper .hero {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: unset;   /* override the default 100svh */
+  overflow: hidden;    /* clip zoomed content at hero boundary */
+  z-index: 2;
+}
+
+/* The animated content block inside hero */
+#heroContent {
+  will-change: transform, opacity, filter;
+  transform-origin: center center;
+}
+
+/* Scroll cue fades with hero content */
+.scroll-transition-wrapper .scroll-cue {
+  will-change: opacity;
+}
+
+/* Gallery stacks above the sticky hero */
+.scroll-transition-wrapper #gallery {
+  position: relative;
+  z-index: 4;
+  will-change: transform, opacity, filter;
+}
+
+/* Reduced-motion: disable cinematic layer, restore normal layout */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-transition-wrapper {
+    min-height: unset;
+    background: var(--bg);
+  }
+  .scroll-transition-wrapper .hero {
+    position: relative;
+    height: auto;
+    min-height: 100svh;
+    overflow: visible;
+  }
+  #heroContent {
+    will-change: auto;
+  }
+  .scroll-transition-wrapper .scroll-cue {
+    will-change: auto;
+  }
+  .scroll-transition-wrapper #gallery {
+    will-change: auto;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}

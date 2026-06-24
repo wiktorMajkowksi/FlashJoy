@@ -22,19 +22,19 @@
   <!-- ═══ HEADER ═══ -->
   <header id="site-header">
     <div class="nav-inner">
-      <a href="#hero" class="nav-logo" aria-label="FlashJoy — home">
+      <a href="index.html" class="nav-logo" aria-label="FlashJoy — home">
         <img src="Logo_basic_whiteout.png" alt="" aria-hidden="true" class="logo-img" />
         <span class="logo-wordmark">FlashJoy</span>
       </a>
 
       <nav aria-label="Primary">
         <ul class="nav-list" id="desktop-nav">
-          <li><a href="#gallery"  class="nav-link">Gallery</a></li>
-          <li><a href="#features" class="nav-link">Features</a></li>
-          <li><a href="#pricing"  class="nav-link">Packages</a></li>
-          <li><a href="#about"    class="nav-link">About</a></li>
-          <li><a href="#contact"  class="nav-link">Contact</a></li>
-          <li><a href="#pricing"  class="nav-cta-pill">Book now</a></li>
+          <li><a href="#gallery"           class="nav-link">Gallery</a></li>
+          <li><a href="#features"          class="nav-link">Features</a></li>
+          <li><a href="packages.html"      class="nav-link">Packages</a></li>
+          <li><a href="about.html"         class="nav-link">About</a></li>
+          <li><a href="about.html#contact" class="nav-link">Contact</a></li>
+          <li><a href="packages.html"      class="nav-cta-pill">Book now</a></li>
         </ul>
       </nav>
 
@@ -53,12 +53,12 @@
     <!-- Mobile menu -->
     <div id="mobile-menu" class="mobile-menu" hidden>
       <ul class="mobile-list">
-        <li><a href="#gallery"  class="mobile-link">Gallery</a></li>
-        <li><a href="#features" class="mobile-link">Features</a></li>
-        <li><a href="#pricing"  class="mobile-link">Packages</a></li>
-        <li><a href="#about"    class="mobile-link">About</a></li>
-        <li><a href="#contact"  class="mobile-link">Contact</a></li>
-        <li><a href="#pricing"  class="mobile-link is-cta">Book now</a></li>
+        <li><a href="#gallery"           class="mobile-link">Gallery</a></li>
+        <li><a href="#features"          class="mobile-link">Features</a></li>
+        <li><a href="packages.html"      class="mobile-link">Packages</a></li>
+        <li><a href="about.html"         class="mobile-link">About</a></li>
+        <li><a href="about.html#contact" class="mobile-link">Contact</a></li>
+        <li><a href="packages.html"      class="mobile-link is-cta">Book now</a></li>
       </ul>
     </div>
   </header>
@@ -69,6 +69,9 @@
   </div>
 
   <main id="main">
+
+    <!-- ═══════════ SCROLL TRANSITION ZONE ═══════════ -->
+    <div class="scroll-transition-wrapper">
 
     <!-- ═══════════ HERO ═══════════ -->
     <section id="hero" class="hero">
@@ -85,15 +88,15 @@
       </div>
 
       <!-- Content -->
-      <div class="hero-body">
+      <div class="hero-body" id="heroContent">
 
-        <!-- Eyebrow badge -->
+        <!-- Eyebrow badge
         <div class="hero-eyebrow" data-hi="eyebrow">
           <span class="eyebrow-pulse"></span>
           <span>London &amp; South East</span>
           <span class="eyebrow-sep" aria-hidden="true">·</span>
           <span>Premium Photo Experiences</span>
-        </div>
+        </div> -->
 
         <!-- Headline -->
         <h1 class="hero-headline" aria-label="Capture every joyful moment.">
@@ -109,7 +112,7 @@
 
         <!-- CTAs -->
         <div class="hero-ctas" data-hi="ctas">
-          <a href="#pricing" class="btn-primary">
+          <a href="packages.html" class="btn-primary">
             Get a quote
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
@@ -234,6 +237,8 @@
       </div>
     </section>
 
+    </div><!-- /scroll-transition-wrapper -->
+
     <!-- ═══════════ FEATURES ═══════════ -->
     <section id="features" class="section features-section">
       <div class="section-inner">
@@ -296,283 +301,6 @@
       </div>
     </section>
 
-    <!-- ═══════════ PACKAGES ═══════════ -->
-    <section id="pricing" class="section pricing-section">
-      <div class="section-inner">
-
-        <div class="section-head" data-reveal>
-          <div class="section-label">Packages</div>
-          <h2 class="section-title">Find your<br><em>perfect package.</em></h2>
-          <p class="section-sub">Free delivery, setup &amp; a dedicated booth attendant included with every booking.</p>
-        </div>
-
-        <!-- ── Wedding Packages ── -->
-        <div class="pkg-group">
-          <div class="pkg-group-header" data-reveal>
-            <div class="pkg-group-title">
-              <svg class="pkg-group-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-              Wedding Packages
-            </div>
-            <div class="pkg-incl-note">
-              <span class="pkg-incl-label">Every wedding package includes:</span>
-              <span class="pkg-incl-items">Unlimited Prints (6×2) · Audio Guest Book · Props · Custom Tap To Start Screen · USB Stick · Digital Backgrounds</span>
-            </div>
-          </div>
-
-          <div class="pricing-grid">
-
-            <div class="price-card wedding-card" data-reveal>
-              <div class="price-tier">Selfie Pod / Vintage Pod</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">349</span><span class="price-dec">.99</span>
-              </div>
-              <p class="price-desc">Sleek modern or vintage-styled pod with touch screen and instant prints — a timeless choice.</p>
-              <a href="#contact" class="price-btn price-btn-outline">Enquire now</a>
-            </div>
-
-            <div class="price-card wedding-card price-featured" data-reveal>
-              <div class="price-badge">Most Popular</div>
-              <div class="price-tier">Vintage Pod DSLR</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">399</span><span class="price-dec">.99</span>
-              </div>
-              <p class="price-desc">DSLR camera upgrade for studio-quality portraits — stunning results on your big day.</p>
-              <a href="#contact" class="price-btn price-btn-brand">Reserve your date</a>
-            </div>
-
-            <div class="price-card wedding-card price-premium" data-reveal>
-              <div class="price-badge price-badge-gold">Premium</div>
-              <div class="price-tier">Photo Booth</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">449</span><span class="price-dec">.99</span>
-              </div>
-              <p class="price-desc">Full enclosed booth experience — the ultimate statement piece for your reception.</p>
-              <a href="#contact" class="price-btn price-btn-gold">Reserve your date</a>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- ── Standard / Digital Packages ── -->
-        <div class="pkg-group">
-          <div class="pkg-group-header" data-reveal>
-            <div class="pkg-group-title">Standard Hire &amp; Digital Packages</div>
-          </div>
-
-          <div class="pricing-grid standard-grid">
-
-            <div class="price-card" data-reveal>
-              <div class="price-tier">Selfie Pod Digital</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">249</span><span class="price-dec">.99</span>
-              </div>
-              <p class="price-desc">Instant digital sharing — no prints, full QR &amp; AirDrop experience.</p>
-              <a href="#contact" class="price-btn price-btn-outline">Enquire now</a>
-            </div>
-
-            <div class="price-card" data-reveal>
-              <div class="price-tier">Vintage Pod Digital</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">249</span><span class="price-dec">.99</span>
-              </div>
-              <p class="price-desc">Vintage styling meets modern digital sharing — timeless look, instant delivery.</p>
-              <a href="#contact" class="price-btn price-btn-outline">Enquire now</a>
-            </div>
-
-            <div class="price-card" data-reveal>
-              <div class="price-tier">Selfie Pod</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">299</span><span class="price-dec">.99</span>
-              </div>
-              <p class="price-desc">4-hour hire with unlimited prints and a sleek modern pod.</p>
-              <ul class="price-list">
-                <li>4 hrs hire</li>
-                <li>Unlimited prints</li>
-              </ul>
-              <a href="#contact" class="price-btn price-btn-outline">Enquire now</a>
-            </div>
-
-            <div class="price-card price-featured" data-reveal>
-              <div class="price-badge">Best Value</div>
-              <div class="price-tier">Vintage Pod</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">299</span><span class="price-dec">.99</span>
-              </div>
-              <p class="price-desc">Retro-chic style with modern print quality — a crowd favourite.</p>
-              <ul class="price-list">
-                <li>4 hrs hire</li>
-                <li>Unlimited prints</li>
-              </ul>
-              <a href="#contact" class="price-btn price-btn-brand">Reserve your date</a>
-            </div>
-
-            <div class="price-card" data-reveal>
-              <div class="price-tier">Vintage Pod DSLR</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">349</span><span class="price-dec">.99</span>
-              </div>
-              <p class="price-desc">DSLR camera in a vintage pod — superior image quality for any occasion.</p>
-              <ul class="price-list">
-                <li>4 hrs hire</li>
-                <li>Unlimited prints</li>
-                <li>DSLR camera</li>
-              </ul>
-              <a href="#contact" class="price-btn price-btn-outline">Enquire now</a>
-            </div>
-
-            <div class="price-card" data-reveal>
-              <div class="price-tier">Photo Booth</div>
-              <div class="price-amount">
-                <sup class="price-sym">£</sup><span class="price-num">399</span><span class="price-dec">.99</span>
-              </div>
-              <p class="price-desc">Full enclosed booth — maximum fun and maximum energy for any event.</p>
-              <ul class="price-list">
-                <li>4 hrs hire</li>
-                <li>Unlimited prints</li>
-                <li>Enclosed booth</li>
-              </ul>
-              <a href="#contact" class="price-btn price-btn-outline">Enquire now</a>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- ── Add-Ons ── -->
-        <div class="addon-section" data-reveal>
-          <div class="pkg-group-header">
-            <div class="pkg-group-title">Add-Ons</div>
-            <p class="section-sub" style="margin-top:0">Enhance your experience with any of the following extras.</p>
-          </div>
-          <div class="addon-grid">
-
-            <div class="addon-card">
-              <div class="addon-price">£30</div>
-              <div class="addon-name">Audio Guest Book</div>
-            </div>
-
-            <div class="addon-card">
-              <div class="addon-price">£25</div>
-              <div class="addon-name">Props</div>
-              <div class="addon-note">Wedding · Party · Baby Shower · Festive</div>
-            </div>
-
-            <div class="addon-card">
-              <div class="addon-price">£15</div>
-              <div class="addon-name">Custom Tap To Start Screen &amp; Prints</div>
-            </div>
-
-            <div class="addon-card">
-              <div class="addon-price">£25</div>
-              <div class="addon-name">USB Stick</div>
-            </div>
-
-            <div class="addon-card">
-              <div class="addon-price">£60</div>
-              <div class="addon-name">Photobook</div>
-            </div>
-
-            <div class="addon-card">
-              <div class="addon-price">£50</div>
-              <div class="addon-name">Bigger Prints</div>
-            </div>
-
-            <div class="addon-card addon-card-wide">
-              <div class="addon-price">£50 <span>/ additional hour</span></div>
-              <div class="addon-name">Extra Hours</div>
-              <div class="addon-note">If you don't want the party to end, add extra hours to your photo booth experience. Each additional hour is charged at £50.00.</div>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ═══════════ ABOUT ═══════════ -->
-    <section id="about" class="section about-section">
-      <div class="section-inner">
-        <div class="about-layout">
-
-          <div class="about-quote" data-reveal>
-            <blockquote>
-              "Make it effortless for hosts to create moments guests actually remember."
-            </blockquote>
-          </div>
-
-          <div class="about-copy">
-            <div class="section-label" data-reveal>Our story</div>
-            <p data-reveal>
-              FlashJoy started with a simple idea: make it effortless for hosts to create moments guests
-              actually remember. We obsessed over flattering lighting, snappy sharing, and a service that
-              just works — so you can enjoy your event.
-            </p>
-            <p data-reveal>
-              Today we capture smiles across weddings, birthdays, corporate parties and pop-ups. We bring
-              the pro kit, the props, and the good vibes — then deliver a beautiful gallery the next day.
-            </p>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════ CONTACT ═══════════ -->
-    <section id="contact" class="section contact-section">
-      <div class="section-inner">
-        <div class="contact-layout">
-
-          <div class="contact-copy">
-            <div class="section-label" data-reveal>Get in touch</div>
-            <h2 class="section-title" data-reveal>Ready to make<br><em>it happen?</em></h2>
-            <p class="section-sub" data-reveal>Tell us about your event and we'll put together a custom quote — usually within a few hours.</p>
-          </div>
-
-          <div class="contact-links" data-reveal>
-
-            <a href="https://www.instagram.com/flashjoy_uk/" class="contact-link" target="_blank" rel="noreferrer noopener">
-              <div class="cl-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-                </svg>
-              </div>
-              <div class="cl-body">
-                <span class="cl-name">Instagram</span>
-                <span class="cl-handle">@flashjoy_uk</span>
-              </div>
-              <svg class="cl-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-
-            <a href="https://wa.me/7981817188" class="contact-link" target="_blank" rel="noreferrer noopener">
-              <div class="cl-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
-                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-                </svg>
-              </div>
-              <div class="cl-body">
-                <span class="cl-name">WhatsApp</span>
-                <span class="cl-handle">Message us directly</span>
-              </div>
-              <svg class="cl-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-
-            <a href="mailto:flashjoyuk@gmail.com" class="contact-link">
-              <div class="cl-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-                </svg>
-              </div>
-              <div class="cl-body">
-                <span class="cl-name">Email</span>
-                <span class="cl-handle">flashjoyuk@gmail.com</span>
-              </div>
-              <svg class="cl-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-
-          </div>
-        </div>
-      </div>
-    </section>
-
   </main>
 
   <!-- ═══ FOOTER ═══ -->
@@ -584,9 +312,9 @@
       </div>
       <p class="footer-copy">© <span id="year"></span> FlashJoy. All rights reserved. London &amp; South East.</p>
       <nav class="footer-nav" aria-label="Footer">
-        <a href="#about">About</a>
-        <a href="#pricing">Packages</a>
-        <a href="#contact">Contact</a>
+        <a href="about.html">About</a>
+        <a href="packages.html">Packages</a>
+        <a href="about.html#contact">Contact</a>
         <a href="#">Privacy</a>
         <a href="#">Terms</a>
       </nav>
