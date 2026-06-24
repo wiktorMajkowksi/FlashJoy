@@ -956,11 +956,15 @@ a   { text-decoration: none; color: inherit; }
 }
 .feat-img img {
   width: 100%;
-  height: 175px;
-  object-fit: cover;
+  height: 250px;
+  object-fit:cover;
   transition: transform 0.55s var(--ease-expo);
 }
 .feat-card:hover .feat-img img { transform: scale(1.05); }
+
+.map-light { display: none; }
+[data-theme="light"] .map-dark { display: none; }
+[data-theme="light"] .map-light { display: block; }
 
 /* ─── 9. PRICING ─────────────────────────────────── */
 .pricing-section { background: var(--bg-2); }
@@ -1368,7 +1372,7 @@ a   { text-decoration: none; color: inherit; }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 5.5rem;
-  align-items: start;
+  align-items: center;
 }
 
 .contact-links { display: flex; flex-direction: column; gap: 0.75rem; }
