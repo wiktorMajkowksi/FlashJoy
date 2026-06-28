@@ -1610,13 +1610,14 @@ a   { text-decoration: none; color: inherit; }
 
 .ribbon-item {
   flex-shrink: 0;
-  width: 168px;
+  width: 90px;
   border-radius: 0.875rem;
   overflow: hidden;
   border: 1px solid var(--border-md);
   background: var(--surface);
   transition: transform 0.4s var(--ease-expo), border-color 0.3s ease;
 }
+.ribbon-item:nth-child(4n) { width: 168px; }
 .ribbon-item:hover {
   transform: scale(1.04) translateY(-4px);
   border-color: rgba(80,8,101,0.35);
@@ -1624,7 +1625,7 @@ a   { text-decoration: none; color: inherit; }
 .ribbon-item img {
   width: 100%;
   height: 252px;
-  object-fit: cover;
+  object-fit:scale-down;
   display: block;
   transition: transform 0.55s var(--ease-expo);
 }
@@ -1707,7 +1708,8 @@ a   { text-decoration: none; color: inherit; }
 }
 
 @media (max-width: 680px) {
-  .ribbon-item { width: 136px; }
+  .ribbon-item { width: 72px; }
+  .ribbon-item:nth-child(4n) { width: 136px; }
   .ribbon-item img, .ribbon-placeholder { height: 204px; }
   .two-col-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; }
   .pkg-subnav { width: 100%; justify-content: center; }
