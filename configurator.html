@@ -183,8 +183,38 @@ body{
 .hint svg{opacity:.7}
 .hint.hidden{opacity:0}
 
+/* ---------- back button ---------- */
+.back-btn{
+  position:absolute;left:20px;top:20px;z-index:45;
+  width:38px;height:38px;border-radius:12px;border:1px solid var(--stroke-2);
+  background:rgba(13,12,21,.66);color:var(--text);text-decoration:none;
+  display:grid;place-items:center;
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  transition:border-color .25s,background .25s,transform .2s;
+}
+.back-btn:hover{background:rgba(139,92,246,.2);border-color:rgba(139,92,246,.5);transform:translateY(-1px)}
+.back-btn:active{transform:translateY(0)}
+.back-btn:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+
+/* ---------- mobile sticky CTA bar ---------- */
+.mobile-cta-bar{
+  display:none;position:fixed;top:0;left:0;right:0;z-index:40;
+  align-items:center;justify-content:space-between;gap:10px;
+  padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));
+  background:rgba(8,7,13,.86);border-bottom:1px solid var(--stroke);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  transform:translateY(-100%);transition:transform .3s cubic-bezier(.22,1,.36,1);
+}
+.mobile-cta-bar.visible{transform:translateY(0)}
+.mcb-cta{
+  border:none;cursor:pointer;border-radius:11px;padding:9px 15px;flex:none;
+  font-family:var(--font-d);font-weight:600;font-size:12.5px;letter-spacing:.01em;color:#fff;
+  background:linear-gradient(135deg,#8b5cf6 0%,#6d3fe0 55%,#5b2fd0 100%);
+}
+.mcb-price{font-family:var(--font-d);font-weight:700;font-size:17px;color:#fff}
+
 /* ---------- zoom controls ---------- */
-.zoom-controls{position:absolute;left:20px;top:20px;z-index:6;display:flex;flex-direction:column;gap:6px}
+.zoom-controls{position:absolute;left:20px;top:70px;z-index:6;display:flex;flex-direction:column;gap:6px}
 .zoom-btn{
   width:38px;height:38px;border-radius:12px;border:1px solid var(--stroke-2);
   background:rgba(13,12,21,.66);color:var(--text);font-family:var(--font-d);font-size:19px;font-weight:600;
@@ -255,11 +285,16 @@ body{
     border-radius:22px 22px 0 0;margin-top:-22px;box-shadow:0 -20px 50px rgba(0,0,0,.55)}
   .panel-scroll{padding:22px 20px 16px}
   .panel-foot{position:sticky;bottom:0;padding:12px 20px 16px}
-  .price-badge{right:16px;bottom:38px;padding:10px 15px}
-  .price-badge .p-value{font-size:22px}
+  .brand{display:none}
+  .price-badge{right:16px;bottom:38px;padding:6px 12px;border-radius:12px}
+  .price-badge .p-label,.price-badge .p-note{display:none}
+  .price-badge .p-value{font-size:18px;margin-top:0}
   .hint{bottom:38px;left:20px;transform:none}
+  .back-btn{width:34px;height:34px;top:16px;left:16px}
+  .zoom-controls{top:62px;left:16px}
   .cards.g3{grid-template-columns:1fr 1fr 1fr}
   .form-grid{grid-template-columns:1fr}
+  .mobile-cta-bar{display:flex}
 }
 @media (max-width:560px){
   .cards.g3{grid-template-columns:1fr}
@@ -333,6 +368,9 @@ body{
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 8 3 12l4 4M17 8l4 4-4 4"/></svg>
       Drag to rotate
     </div>
+    <a href="index.html" class="back-btn" aria-label="Back">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+    </a>
     <div class="zoom-controls">
       <button class="zoom-btn" id="zoom-in" type="button" aria-label="Zoom in">+</button>
       <button class="zoom-btn" id="zoom-out" type="button" aria-label="Zoom out">−</button>
@@ -343,6 +381,12 @@ body{
       <div class="p-note">per event day · setup included</div>
     </div>
   </main>
+</div>
+
+<!-- ============ MOBILE STICKY CTA BAR (shown on scroll) ============ -->
+<div class="mobile-cta-bar" id="mobile-cta-bar">
+  <button class="mcb-cta" id="mobile-open-enquiry" type="button">Request this setup</button>
+  <span class="mcb-price" id="mobile-price">£249</span>
 </div>
 
 <!-- ============ ENQUIRY MODAL ============ -->
@@ -1145,12 +1189,16 @@ function total(){
 }
 let displayedPrice = BOOTHS[state.type].price;
 const priceEl = document.getElementById('price');
+const mobilePriceEl = document.getElementById('mobile-price');
 function updatePrice(){
   const to = total(), from = displayedPrice;
-  if (to === from){ priceEl.textContent = fmt(to); return; }
+  if (to === from){ priceEl.textContent = fmt(to); mobilePriceEl.textContent = fmt(to); return; }
   tween({
     duration: REDUCED ? 1 : 500, ease:ease.inOut,
-    onUpdate: t => { priceEl.textContent = fmt(Math.round(from + (to - from) * t)); },
+    onUpdate: t => {
+      const v = fmt(Math.round(from + (to - from) * t));
+      priceEl.textContent = v; mobilePriceEl.textContent = v;
+    },
     onComplete: () => { displayedPrice = to; },
   });
   displayedPrice = to;
@@ -1279,6 +1327,7 @@ function openModal(){
 }
 function closeModal(){ modalWrap.classList.remove('open'); }
 document.getElementById('open-enquiry').addEventListener('click', openModal);
+document.getElementById('mobile-open-enquiry').addEventListener('click', openModal);
 document.getElementById('modal-close').addEventListener('click', closeModal);
 document.getElementById('modal-cancel').addEventListener('click', closeModal);
 document.getElementById('modal-bg').addEventListener('click', closeModal);
@@ -1288,6 +1337,17 @@ document.getElementById('enquiry-form').addEventListener('submit', e => {
   modal.classList.add('sent');
   setTimeout(closeModal, 2600);
 });
+
+/* ============================================================
+   Mobile sticky CTA bar
+   ============================================================ */
+const mobileCtaBar = document.getElementById('mobile-cta-bar');
+function updateMobileCtaBar(){
+  if (window.innerWidth > 980){ mobileCtaBar.classList.remove('visible'); return; }
+  mobileCtaBar.classList.toggle('visible', window.scrollY > 40);
+}
+window.addEventListener('scroll', updateMobileCtaBar, { passive:true });
+window.addEventListener('resize', updateMobileCtaBar);
 
 /* ============================================================
    Boot
