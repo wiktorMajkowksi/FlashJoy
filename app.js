@@ -397,6 +397,127 @@ if (!reduced) {
   });
 })();
 
+// ── Ribbon drag ──────────────────────────────────────
+(function initRibbonDrag() {
+  const track    = document.querySelector('.ribbon-track');
+  const overflow = document.querySelector('.ribbon-overflow');
+  if (!track || !overflow) return;
+  if (reduced) return;
+
+  // Take over from CSS animation
+  track.style.animation = 'none';
+
+  let position     = 0;      // current translateX in px (≤ 0)
+  let isDragging   = false;
+  let isHovered    = false;
+  let dragStartX   = 0;
+  let dragStartPos = 0;
+  let velocity     = 0;      // px/s, for post-drag inertia
+  let lastX        = 0;
+  let lastTime     = 0;
+  let prevTime     = performance.now();
+
+  function halfWidth() { return track.scrollWidth / 2; }
+
+  function autoSpeed() {
+    const h = halfWidth();
+    return h > 0 ? h / 42 : 60; // match original 42s CSS animation
+  }
+
+  function wrap(pos) {
+    const h = halfWidth();
+    if (h <= 0) return pos;
+    while (pos < -h) pos += h;
+    while (pos > 0)  pos -= h;
+    return pos;
+  }
+
+  function animate(now) {
+    requestAnimationFrame(animate);
+    const dt = Math.min(now - prevTime, 64); // cap to avoid jumps after tab-switch
+    prevTime = now;
+
+    if (!isDragging) {
+      if (Math.abs(velocity) > 0.5) {
+        // Inertia after drag release
+        position += velocity * (dt / 1000);
+        velocity *= Math.pow(0.88, dt / 16.67);
+      } else {
+        velocity = 0;
+        if (!isHovered) {
+          position -= autoSpeed() * (dt / 1000);
+        }
+      }
+      position = wrap(position);
+    }
+
+    track.style.transform = `translateX(${position.toFixed(2)}px)`;
+  }
+
+  requestAnimationFrame(animate);
+
+  // ── Mouse ──────────────────────────────────────────
+  overflow.addEventListener('mousedown', e => {
+    isDragging   = true;
+    dragStartX   = e.clientX;
+    dragStartPos = position;
+    lastX        = e.clientX;
+    lastTime     = performance.now();
+    velocity     = 0;
+    overflow.classList.add('is-dragging');
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const now = performance.now();
+    const dt  = now - lastTime;
+    if (dt > 0) velocity = ((e.clientX - lastX) / dt) * 1000;
+    lastX    = e.clientX;
+    lastTime = now;
+    position = wrap(dragStartPos + (e.clientX - dragStartX));
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    overflow.classList.remove('is-dragging');
+  });
+
+  overflow.addEventListener('dragstart', e => e.preventDefault());
+
+  // ── Hover pause ────────────────────────────────────
+  overflow.addEventListener('mouseenter', () => { isHovered = true; });
+  overflow.addEventListener('mouseleave', () => {
+    isHovered = false;
+    if (!isDragging) velocity = 0;
+  });
+
+  // ── Touch ──────────────────────────────────────────
+  overflow.addEventListener('touchstart', e => {
+    isDragging   = true;
+    dragStartX   = e.touches[0].clientX;
+    dragStartPos = position;
+    lastX        = dragStartX;
+    lastTime     = performance.now();
+    velocity     = 0;
+  }, { passive: true });
+
+  overflow.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const now = performance.now();
+    const dt  = now - lastTime;
+    const cx  = e.touches[0].clientX;
+    if (dt > 0) velocity = ((cx - lastX) / dt) * 1000;
+    lastX    = cx;
+    lastTime = now;
+    position = wrap(dragStartPos + (cx - dragStartX));
+  }, { passive: false });
+
+  overflow.addEventListener('touchend', () => { isDragging = false; }, { passive: true });
+})();
+
 // ── Premium scroll transition (hero → gallery) ───────
 (function initScrollTransition() {
   if (reduced) return;
