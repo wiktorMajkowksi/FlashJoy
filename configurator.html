@@ -64,7 +64,7 @@ body{
 .brand-mark svg{width:16px;height:16px}
 .brand h1{font-family:var(--font-d);font-weight:700;font-size:19px;letter-spacing:.02em}
 .brand h1 span{color:var(--violet-soft)}
-.tagline{color:var(--muted);font-size:13px;line-height:1.55;margin:10px 0 26px;max-width:32ch}
+.tagline{color:var(--muted);font-size:13px;line-height:1.55;margin:10px 0 26px;max-width:34ch}
 
 /* ---------- sections ---------- */
 .section{margin-bottom:30px}
@@ -76,6 +76,7 @@ body{
 
 /* ---------- option cards ---------- */
 .cards{display:grid;gap:9px}
+.cards.g2{grid-template-columns:repeat(2,1fr)}
 .cards.g3{grid-template-columns:repeat(3,1fr)}
 .card{
   position:relative;text-align:left;font-family:var(--font-b);color:var(--text);
@@ -297,7 +298,7 @@ body{
   .mobile-cta-bar{display:flex}
 }
 @media (max-width:560px){
-  .cards.g3{grid-template-columns:1fr}
+  .cards.g3{grid-template-columns:1fr 1fr}
 }
 @media (prefers-reduced-motion:reduce){
   *{transition-duration:.01ms!important;animation-duration:.01ms!important}
@@ -316,14 +317,14 @@ body{
         </div>
         <h1>Flash<span>Joy</span></h1>
       </div>
-      <p class="tagline">Build your booth. Every change appears live in the studio on the right — drag to look around.</p>
+      <p class="tagline">Choose your pod, then customise its magnetic front board. Every change appears live in the studio — drag to look around.</p>
 
       <section class="section">
         <div class="sec-head">
           <div class="sec-title"><span class="sec-num">01</span><span class="sec-name">Booth type</span></div>
           <span class="sec-hint" id="hint-type"></span>
         </div>
-        <div class="cards g3" id="type-cards" role="group" aria-label="Booth type"></div>
+        <div class="cards g2" id="type-cards" role="group" aria-label="Booth type"></div>
       </section>
 
       <section class="section">
@@ -336,7 +337,15 @@ body{
 
       <section class="section">
         <div class="sec-head">
-          <div class="sec-title"><span class="sec-num">03</span><span class="sec-name">Backdrop</span></div>
+          <div class="sec-title"><span class="sec-num">03</span><span class="sec-name">Front board</span></div>
+          <span class="sec-hint" id="hint-board"></span>
+        </div>
+        <div class="cards g3" id="board-cards" role="group" aria-label="Magnetic front board"></div>
+      </section>
+
+      <section class="section">
+        <div class="sec-head">
+          <div class="sec-title"><span class="sec-num">04</span><span class="sec-name">Backdrop</span></div>
           <span class="sec-hint" id="hint-backdrop"></span>
         </div>
         <div class="cards" style="grid-template-columns:1fr 1fr" id="backdrop-cards" role="group" aria-label="Backdrop"></div>
@@ -344,7 +353,7 @@ body{
 
       <section class="section">
         <div class="sec-head">
-          <div class="sec-title"><span class="sec-num">04</span><span class="sec-name">Add-ons</span></div>
+          <div class="sec-title"><span class="sec-num">05</span><span class="sec-name">Add-ons</span></div>
           <span class="sec-hint" id="hint-addons">optional</span>
         </div>
         <div class="cards" id="addon-rows" role="group" aria-label="Add-ons"></div>
@@ -424,21 +433,28 @@ body{
 <script>
 'use strict';
 /* ============================================================
-   FlashJoy configurator
+   FlashJoy configurator — two real pods + magnetic front boards
    ============================================================ */
 const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- catalogue ---------- */
 const BOOTHS = {
-  selfie:  { name:'Selfie Pod',    price:249, sub:'Slim iPad-style pod. The crowd favourite.' },
-  dslr:    { name:'DSLR Pod',      price:349, sub:'Studio-grade lens for magazine-quality shots.' },
-  vintage: { name:'Vintage Booth', price:399, sub:'Retro-inspired body with champagne detailing.' },
+  standard: { name:'Standard Pod',   price:249, sub:'Our modern ring-light pod. Swappable magnetic front boards.' },
+  retro:    { name:'Retro DSLR Pod', price:399, sub:'Retro wooden body with a studio DSLR built in — always DSLR.' },
 };
 const COLORS = {
   white:     { name:'White',     hex:0xf5f5f7, css:'linear-gradient(145deg,#ffffff,#d9d9e2)' },
   black:     { name:'Black',     hex:0x1a191f, css:'linear-gradient(145deg,#3a3942,#121118)' },
   purple:    { name:'Purple',    hex:0x6b46d6, css:'linear-gradient(145deg,#9a7bf0,#5b34c9)' },
   champagne: { name:'Champagne', hex:0xe8d5b0, css:'linear-gradient(145deg,#f6e9cc,#cfb789)' },
+};
+const BOARDS = {
+  classic:   { name:'Classic front',          sub:'Clean rounded magnetic board' },
+  heart:     { name:'Heart front',            sub:'Heart-shaped board for weddings' },
+  character: { name:'Yellow character front', sub:'Playful party-character styling' },
+  flower:    { name:'Flower front',           sub:'Blush & cream floral edge' },
+  disco:     { name:'Disco front',            sub:'Mirror-ball silver shimmer' },
+  custom:    { name:'Custom front',           sub:'Your own design or branding' },
 };
 const BACKDROPS = {
   none:    { name:'None',        sub:'Clean studio floor' },
@@ -454,7 +470,7 @@ const ADDONS = {
   neon:      { name:'Neon Sign',             price:40, sub:'Glowing FlashJoy sign overhead' },
 };
 
-const state = { type:'selfie', color:'white', backdrop:'none', addons:new Set() };
+const state = { type:'standard', color:'black', board:'classic', backdrop:'none', addons:new Set() };
 
 /* ============================================================
    Tiny tween engine
@@ -547,6 +563,9 @@ scene.add(rim);
 const screenLight = new THREE.PointLight(0xa78bfa, .45, 3.2, 2); // glow spill from screen
 scene.add(screenLight);
 
+const ringGlow = new THREE.PointLight(0xffffff, 0, 4.5, 2);      // spill from LED ring (standard pod)
+scene.add(ringGlow);
+
 /* ---------- floor + stage ---------- */
 const floor = new THREE.Mesh(
   new THREE.CircleGeometry(11, 64),
@@ -586,10 +605,11 @@ const matteBlack = new THREE.MeshStandardMaterial({ color:0x17161d, roughness:.6
 const chromeMat  = new THREE.MeshStandardMaterial({ color:0xd9d9e2, roughness:.18, metalness:.95, envMapIntensity:1.3 });
 const brassMat   = new THREE.MeshStandardMaterial({ color:0xcaa45a, roughness:.3,  metalness:.9,  envMapIntensity:1.2 });
 const lensGlass  = new THREE.MeshPhysicalMaterial({ color:0x0a0d18, roughness:.05, metalness:.2, clearcoat:1, clearcoatRoughness:.05, envMapIntensity:1.6 });
+const paperMat   = new THREE.MeshStandardMaterial({ color:0xf5f1e8, roughness:.85, metalness:0 });
+const ledMat     = new THREE.MeshBasicMaterial({ color:0xffffff, toneMapped:false });
 
-function roundedBox(w, h, d, r, seg){
-  seg = seg || 5;
-  const bev = Math.min(r * .6, d * .3);
+/* --- 2D shape helpers --- */
+function roundedRectShape(w, h, r){
   const s = new THREE.Shape();
   const x = -w/2, y = -h/2;
   s.moveTo(x + r, y);
@@ -597,7 +617,52 @@ function roundedBox(w, h, d, r, seg){
   s.lineTo(x + w, y + h - r);       s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
   s.lineTo(x + r, y + h);           s.quadraticCurveTo(x, y + h, x, y + h - r);
   s.lineTo(x, y + r);               s.quadraticCurveTo(x, y, x + r, y);
-  const g = new THREE.ExtrudeGeometry(s, {
+  return s;
+}
+function ellipseShape(rx, ry){
+  const s = new THREE.Shape();
+  s.absellipse(0, 0, rx, ry, 0, Math.PI * 2, false, 0);
+  return s;
+}
+function ellipseHolePath(cx, cy, rx, ry){
+  const p = new THREE.Path();
+  p.absellipse(cx, cy, rx, ry, 0, Math.PI * 2, true, 0);
+  return p;
+}
+function circleHolePath(cx, cy, r){
+  const p = new THREE.Path();
+  p.absarc(cx, cy, r, 0, Math.PI * 2, true);
+  return p;
+}
+/* premium heart, point down; lift shifts the outline up so a hole at (0,0)
+   sits below the notch between the lobes */
+function heartShape(w, h, lift){
+  const L = lift || 0;
+  const s = new THREE.Shape();
+  s.moveTo(0, -h * .5 + L);
+  s.bezierCurveTo(-w * .55, -h * .12 + L, -w * .62, h * .32 + L, -w * .28, h * .44 + L);
+  s.bezierCurveTo(-w * .10, h * .50 + L, -0.001,  h * .40 + L,  0,       h * .30 + L);
+  s.bezierCurveTo( 0.001,   h * .40 + L,  w * .10, h * .50 + L,  w * .28, h * .44 + L);
+  s.bezierCurveTo( w * .62, h * .32 + L,  w * .55, -h * .12 + L, 0, -h * .5 + L);
+  s.closePath();
+  return s;
+}
+/* extrude keeping authored x/y coordinates (no bounding-box recentre),
+   centred on z — needed for asymmetric shapes with aligned holes */
+function extrudeFlat(shape, depth, bevel, seg){
+  seg = seg || 4;
+  const d = Math.max(depth - bevel * 2, .001);
+  const g = new THREE.ExtrudeGeometry(shape, {
+    depth:d, bevelEnabled:true, bevelSegments:seg, steps:1,
+    bevelSize:bevel, bevelThickness:bevel, curveSegments:28,
+  });
+  g.translate(0, 0, -d / 2);
+  return g;
+}
+function roundedBox(w, h, d, r, seg){
+  seg = seg || 5;
+  const bev = Math.min(r * .6, d * .3);
+  const g = new THREE.ExtrudeGeometry(roundedRectShape(w, h, r), {
     depth: Math.max(d - bev * 2, .01), bevelEnabled:true, bevelSegments:seg,
     steps:1, bevelSize:bev, bevelThickness:bev, curveSegments:seg * 2,
   });
@@ -657,20 +722,20 @@ if (document.fonts && document.fonts.ready){
     });
   });
 }
-const screenTexDefault = canvasTexture(512, 384, (g, w, h) => {
+function drawScreenDefault(g, w, h){
   const bg = g.createLinearGradient(0, 0, 0, h);
   bg.addColorStop(0, '#181330'); bg.addColorStop(1, '#0c0a18');
   g.fillStyle = bg; g.fillRect(0, 0, w, h);
-  const glow = g.createRadialGradient(w/2, h*.44, 10, w/2, h*.44, 190);
+  const glow = g.createRadialGradient(w/2, h*.42, 10, w/2, h*.42, Math.min(w, h) * .48);
   glow.addColorStop(0, 'rgba(139,92,246,.55)'); glow.addColorStop(1, 'rgba(139,92,246,0)');
   g.fillStyle = glow; g.fillRect(0, 0, w, h);
   g.strokeStyle = 'rgba(200,180,255,.9)'; g.lineWidth = 5;
-  g.beginPath(); g.arc(w/2, h*.44, 56, 0, Math.PI*2); g.stroke();
+  g.beginPath(); g.arc(w/2, h*.42, Math.min(w, h) * .14, 0, Math.PI*2); g.stroke();
   g.fillStyle = 'rgba(220,205,255,.95)';
-  g.font = '600 30px Space Grotesk, sans-serif'; g.textAlign = 'center';
+  g.font = `600 ${Math.round(w * .062)}px Space Grotesk, sans-serif`; g.textAlign = 'center';
   g.fillText('Tap to start', w/2, h*.78);
-});
-const screenTexWelcome = canvasTexture(512, 384, (g, w, h) => {
+}
+function drawScreenWelcome(g, w, h){
   const bg = g.createLinearGradient(0, 0, w, h);
   bg.addColorStop(0, '#5b2fd0'); bg.addColorStop(.55, '#7b46e8'); bg.addColorStop(1, '#3a1c8f');
   g.fillStyle = bg; g.fillRect(0, 0, w, h);
@@ -679,11 +744,16 @@ const screenTexWelcome = canvasTexture(512, 384, (g, w, h) => {
     g.beginPath(); g.arc(Math.random()*w, Math.random()*h, Math.random()*3+1, 0, Math.PI*2); g.fill();
   }
   g.textAlign = 'center'; g.fillStyle = '#fff';
-  g.font = '500 26px Inter, sans-serif';   g.fillText('Welcome to', w/2, h*.4);
-  g.font = '700 54px Space Grotesk, sans-serif'; g.fillText('FLASHJOY', w/2, h*.58);
-  g.font = '500 20px Inter, sans-serif'; g.fillStyle = 'rgba(255,255,255,.75)';
-  g.fillText('✦  step in & smile  ✦', w/2, h*.76);
-});
+  g.font = `500 ${Math.round(w * .052)}px Inter, sans-serif`;          g.fillText('Welcome to', w/2, h*.38);
+  g.font = `700 ${Math.round(w * .105)}px Space Grotesk, sans-serif`;  g.fillText('FLASHJOY', w/2, h*.55);
+  g.font = `500 ${Math.round(w * .04)}px Inter, sans-serif`; g.fillStyle = 'rgba(255,255,255,.75)';
+  g.fillText('✦  step in & smile  ✦', w/2, h*.72);
+}
+const texDefaultL = canvasTexture(512, 384, drawScreenDefault);
+const texWelcomeL = canvasTexture(512, 384, drawScreenWelcome);
+const texDefaultP = canvasTexture(384, 512, drawScreenDefault);
+const texWelcomeP = canvasTexture(384, 512, drawScreenWelcome);
+
 const neonTex = canvasTexture(1024, 320, (g, w, h) => {
   g.clearRect(0, 0, w, h);
   g.textAlign = 'center'; g.textBaseline = 'middle';
@@ -692,120 +762,357 @@ const neonTex = canvasTexture(1024, 320, (g, w, h) => {
   for (const blur of [60, 34, 16]){ g.shadowBlur = blur; g.fillStyle = '#a78bfa'; g.fillText('flashjoy', w/2, h/2); }
   g.shadowBlur = 8; g.fillStyle = '#f4edff'; g.fillText('flashjoy', w/2, h/2);
 });
+const discoTex = canvasTexture(512, 512, (g, w, h) => {
+  const base = g.createLinearGradient(0, 0, w, h);
+  base.addColorStop(0, '#dfe0ea'); base.addColorStop(.5, '#aeb0c2'); base.addColorStop(1, '#e8e9f2');
+  g.fillStyle = base; g.fillRect(0, 0, w, h);
+  const TILE = 32;
+  for (let ty = 0; ty < h; ty += TILE){
+    for (let tx = 0; tx < w; tx += TILE){
+      const v = .75 + Math.random() * .45;
+      g.fillStyle = `rgba(${Math.round(190*v)},${Math.round(192*v)},${Math.round(210*v)},1)`;
+      g.fillRect(tx + 1, ty + 1, TILE - 2, TILE - 2);
+      if (Math.random() < .12){
+        g.fillStyle = 'rgba(255,255,255,.9)';
+        g.fillRect(tx + 4, ty + 4, TILE - 14, TILE - 14);
+      }
+    }
+  }
+  g.strokeStyle = 'rgba(60,60,78,.55)'; g.lineWidth = 2;
+  for (let i = 0; i <= w; i += TILE){ g.beginPath(); g.moveTo(i, 0); g.lineTo(i, h); g.stroke(); }
+  for (let i = 0; i <= h; i += TILE){ g.beginPath(); g.moveTo(0, i); g.lineTo(w, i); g.stroke(); }
+});
 
 /* ============================================================
-   Booth builder
+   Booth builder — two real pods, modelled on the real hardware
    ============================================================ */
 const boothGroup = new THREE.Group();
 scene.add(boothGroup);
 let headGroup = null;
 let screenMesh = null;
+let boardGroup = null;
 
+function applyScreenTexture(){
+  if (!screenMesh) return;
+  const portrait = !!screenMesh.userData.portrait;
+  const on = state.addons.has('welcome');
+  screenMesh.material.map = on ? (portrait ? texWelcomeP : texWelcomeL)
+                               : (portrait ? texDefaultP : texDefaultL);
+  screenMesh.material.needsUpdate = true;
+}
+
+/* ---------- stands ---------- */
 function buildStand(kind){
   const g = new THREE.Group();
-  const colMat = kind === 'vintage' ? brassMat : matteBlack;
-  const col = mesh(new THREE.CylinderGeometry(.045, .06, 1.55, 24), colMat, 0, .85, 0);
-  g.add(col);
-  g.add(mesh(new THREE.CylinderGeometry(.075, .075, .1, 24), colMat, 0, 1.6, 0));
-  const hub = mesh(new THREE.CylinderGeometry(.1, .12, .09, 24), colMat, 0, .1, 0);
-  g.add(hub);
-  for (let i = 0; i < 3; i++){
-    const a = i / 3 * Math.PI * 2 + Math.PI / 6;
-    const leg = mesh(new THREE.CylinderGeometry(.028, .034, .78, 14), colMat);
-    leg.position.set(Math.cos(a) * .32, .07, Math.sin(a) * .32);
-    leg.rotation.z =  Math.cos(a) * 1.12;
-    leg.rotation.x = -Math.sin(a) * 1.12;
-    g.add(leg);
-    const foot = mesh(new THREE.SphereGeometry(.045, 14, 12), colMat);
-    foot.position.set(Math.cos(a) * .64, .035, Math.sin(a) * .64);
-    foot.scale.y = .6;
-    g.add(foot);
+  if (kind === 'standard'){
+    /* black column on a flat rounded base — like the real Standard Pod */
+    const base = mesh(roundedBox(.68, .06, .52, .05), matteBlack, 0, .03, 0);
+    base.receiveShadow = true;
+    const column = mesh(new THREE.CylinderGeometry(.058, .066, 1.5, 28), matteBlack, 0, .81, 0);
+    const collar = mesh(new THREE.CylinderGeometry(.072, .072, .06, 28), darkGloss, 0, 1.53, 0);
+    g.add(base, column, collar);
+  } else {
+    /* retro easel-style tripod with a round shelf, matching the pod body colour */
+    const angles = [Math.PI / 2, Math.PI * 7 / 6, -Math.PI / 6]; // one back, two front
+    angles.forEach(a => {
+      const sub = new THREE.Group();
+      sub.rotation.y = a;
+      const leg = mesh(new THREE.BoxGeometry(.105, 1.42, .034), bodyMat, .325, .64, 0);
+      leg.rotation.z = .38;
+      leg.userData.isBody = true;
+      const foot = mesh(new THREE.BoxGeometry(.11, .028, .07), matteBlack, .565, .014, 0);
+      sub.add(leg, foot);
+      g.add(sub);
+    });
+    const bracket = mesh(roundedBox(.36, .16, .36, .05), bodyMat, 0, 1.24, 0);
+    bracket.userData.isBody = true;
+    const shelf = mesh(new THREE.CylinderGeometry(.36, .36, .028, 40), bodyMat, 0, .66, .05);
+    shelf.userData.isBody = true;
+    const shelfRim = mesh(new THREE.TorusGeometry(.355, .009, 8, 48), darkGloss, 0, .652, .05);
+    shelfRim.rotation.x = Math.PI / 2;
+    g.add(bracket, shelf, shelfRim);
   }
   return g;
 }
 
+/* ---------- heads ---------- */
 function buildHead(kind){
   const g = new THREE.Group();
-  let W = .92, H = 1.5, D = .27, R = .12;
-  if (kind === 'dslr')    { W = 1.02; H = 1.58; D = .34; R = .13; }
-  if (kind === 'vintage') { W = 1.14; H = 1.66; D = .48; R = .2;  }
 
-  const body = mesh(roundedBox(W, H, D, R), bodyMat, 0, 0, 0);
-  body.userData.isBody = true;
-  g.add(body);
+  if (kind === 'standard'){
+    /* --- oval ring-light pod (from the black pod photo) --- */
+    const RX = .41, RY = .56, D = .16;
 
-  // dark face plate framing lens + screen
-  const plateW = W * .74, plateH = H * .78;
-  const plate = mesh(roundedBox(plateW, plateH, .045, .09, 4), darkGloss, 0, .02, D/2 - .002);
-  g.add(plate);
+    const body = mesh(extrudeFlat(ellipseShape(RX, RY), D, .05, 5), bodyMat, 0, 0, 0);
+    body.userData.isBody = true;
+    g.add(body);
 
-  // ---- lens assembly ----
-  const lensY = plateH * .27;
-  if (kind === 'dslr'){
-    const barrel = mesh(new THREE.CylinderGeometry(.155, .17, .16, 40), matteBlack, 0, lensY, D/2 + .07);
-    barrel.rotation.x = Math.PI/2; g.add(barrel);
-    const ring1 = mesh(new THREE.TorusGeometry(.158, .014, 14, 44), chromeMat, 0, lensY, D/2 + .15); g.add(ring1);
-    const ring2 = mesh(new THREE.TorusGeometry(.12, .01, 12, 40), matteBlack, 0, lensY, D/2 + .152); g.add(ring2);
-    const glass = mesh(new THREE.CylinderGeometry(.115, .115, .02, 40), lensGlass, 0, lensY, D/2 + .15);
-    glass.rotation.x = Math.PI/2; g.add(glass);
-    const iris = mesh(new THREE.CylinderGeometry(.05, .05, .022, 30), new THREE.MeshBasicMaterial({ color:0x2a2350 }), 0, lensY, D/2 + .153);
-    iris.rotation.x = Math.PI/2; g.add(iris);
-    const flash = mesh(roundedBox(.16, .07, .03, .025, 3), new THREE.MeshStandardMaterial({ color:0xf1ead8, roughness:.4, emissive:0x2a2415, emissiveIntensity:.6 }), plateW*.28, lensY + .17, D/2 + .03);
-    g.add(flash);
-  } else {
-    const rr = kind === 'vintage' ? .105 : .095;
-    const ringMat = kind === 'vintage' ? brassMat : chromeMat;
-    const ring = mesh(new THREE.TorusGeometry(rr, .015, 14, 44), ringMat, 0, lensY, D/2 + .035); g.add(ring);
-    const glass = mesh(new THREE.CylinderGeometry(rr - .012, rr - .012, .02, 36), lensGlass, 0, lensY, D/2 + .034);
-    glass.rotation.x = Math.PI/2; g.add(glass);
-    const dot = mesh(new THREE.SphereGeometry(.02, 14, 12), new THREE.MeshBasicMaterial({ color:0x6f5bd6 }), .03, lensY + .03, D/2 + .045);
-    g.add(dot);
+    // white LED ring around the face
+    const ringShape = ellipseShape(.345, .49);
+    ringShape.holes.push(ellipseHolePath(0, 0, .27, .415));
+    const ring = mesh(extrudeFlat(ringShape, .055, .014, 3), ledMat, 0, 0, .078);
+    g.add(ring);
+
+    // dark inner face plate
+    const plate = mesh(extrudeFlat(ellipseShape(.272, .417), .03, .008, 3), darkGloss, 0, 0, .062);
+    g.add(plate);
+
+    // portrait tablet screen + bezel
+    const bezel = mesh(roundedBox(.38, .50, .02, .04, 3), matteBlack, 0, -.01, .082);
+    g.add(bezel);
+    screenMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(.33, .45),
+      new THREE.MeshBasicMaterial({ toneMapped:false })
+    );
+    screenMesh.userData.portrait = true;
+    screenMesh.position.set(0, -.01, .095);
+    g.add(screenMesh);
+
+    // small camera above the screen
+    const camRing = mesh(new THREE.TorusGeometry(.021, .006, 10, 26), chromeMat, 0, .315, .096);
+    const camGlass = mesh(new THREE.CylinderGeometry(.014, .014, .008, 20), lensGlass, 0, .315, .097);
+    camGlass.rotation.x = Math.PI / 2;
+    g.add(camRing, camGlass);
+
+    g.position.y = 2.02;
+    ringGlow.intensity = .55;
+    ringGlow.position.set(0, 2.02, .95);
+    screenLight.position.set(0, 2.0, .7);
+
+    g.userData = {
+      style:'standard',
+      boardY:0, boardZ:.14,
+      hole:{ type:'ellipse', rx:.37, ry:.52 },
+    };
+  }
+  else {
+    /* --- retro DSLR pod (from the retro pod photo): boxy body,
+           print slot up top, DSLR lens, screen, side battens --- */
+    const W = 1.04, H = 1.4, D = .36, R = .07;
+
+    const body = mesh(roundedBox(W, H, D, R), bodyMat, 0, 0, 0);
+    body.userData.isBody = true;
+    g.add(body);
+
+    // vertical battens either side of the face
+    [-1, 1].forEach(s => {
+      const batten = mesh(roundedBox(.05, 1.08, .03, .012, 2), bodyMat, s * .37, -.05, D/2 + .008);
+      batten.userData.isBody = true;
+      g.add(batten);
+    });
+
+    // print exit slot near the top
+    const slotPanel = mesh(roundedBox(.5, .13, .022, .02, 2), paperMat, 0, .56, D/2 + .005);
+    const slotDark = mesh(new THREE.BoxGeometry(.4, .02, .014), new THREE.MeshBasicMaterial({ color:0x0c0b10 }), 0, .53, D/2 + .015);
+    g.add(slotPanel, slotDark);
+
+    // DSLR lens — always present on this model
+    const lensY = .27;
+    const barrel = mesh(new THREE.CylinderGeometry(.14, .152, .2, 40), matteBlack, 0, lensY, D/2 + .09);
+    barrel.rotation.x = Math.PI / 2;
+    const lensRing = mesh(new THREE.TorusGeometry(.146, .013, 14, 44), chromeMat, 0, lensY, D/2 + .185);
+    const glass = mesh(new THREE.CylinderGeometry(.116, .116, .02, 40), lensGlass, 0, lensY, D/2 + .185);
+    glass.rotation.x = Math.PI / 2;
+    const iris = mesh(new THREE.CylinderGeometry(.048, .048, .022, 30), new THREE.MeshBasicMaterial({ color:0x2a2350 }), 0, lensY, D/2 + .188);
+    iris.rotation.x = Math.PI / 2;
+    g.add(barrel, lensRing, glass, iris);
+
+    // landscape screen below the lens
+    const bezel = mesh(roundedBox(.6, .44, .03, .05, 3), matteBlack, 0, -.28, D/2 + .012);
+    g.add(bezel);
+    screenMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(.53, .37),
+      new THREE.MeshBasicMaterial({ toneMapped:false })
+    );
+    screenMesh.userData.portrait = false;
+    screenMesh.position.set(0, -.28, D/2 + .03);
+    g.add(screenMesh);
+
+    g.position.y = 1.99;
+    ringGlow.intensity = 0;
+    screenLight.position.set(0, 1.71, .85);
+
+    g.userData = {
+      style:'retro',
+      boardY:lensY, boardZ:D/2 + .055,
+      hole:{ type:'circle', r:.18 },
+    };
   }
 
-  // ---- screen ----
-  const scrW = plateW * .8, scrH = plateH * .42;
-  const bezel = mesh(roundedBox(scrW + .05, scrH + .05, .03, .05, 3), matteBlack, 0, -plateH * .2, D/2 + .028);
-  g.add(bezel);
-  screenMesh = new THREE.Mesh(
-    new THREE.PlaneGeometry(scrW, scrH),
-    new THREE.MeshBasicMaterial({ map: state.addons.has('welcome') ? screenTexWelcome : screenTexDefault, toneMapped:false })
-  );
-  screenMesh.position.set(0, -plateH * .2, D/2 + .047);
-  g.add(screenMesh);
-  screenLight.position.set(0, 2.05 - plateH * .2, D/2 + .6);
-
-  // ---- vintage detailing ----
-  if (kind === 'vintage'){
-    const trim = mesh(roundedBox(W + .02, .05, D + .02, .02, 3), brassMat, 0, -H * .16, 0);
-    g.add(trim);
-    const trim2 = mesh(roundedBox(W + .02, .035, D + .02, .015, 3), brassMat, 0, H * .42, 0);
-    g.add(trim2);
-    const crown = mesh(roundedBox(W * .55, .09, D * .7, .04, 3), bodyMat, 0, H/2 + .04, 0);
-    crown.userData.isBody = true;
-    g.add(crown);
-    const bulbMat = new THREE.MeshStandardMaterial({ color:0xfff1cf, emissive:0xffca7a, emissiveIntensity:.9, roughness:.4 });
-    for (let i = -2; i <= 2; i++){
-      g.add(mesh(new THREE.SphereGeometry(.024, 12, 10), bulbMat, i * (W * .11), H/2 + .1, D * .22));
-    }
-  }
-
-  // subtle top handle detail on selfie/dslr
-  if (kind !== 'vintage'){
-    const cap = mesh(roundedBox(W * .4, .045, D * .55, .02, 3), darkGloss, 0, H/2 + .015, 0);
-    g.add(cap);
-  }
-
-  g.position.y = 2.12;
-  if (kind === 'vintage') g.position.y = 2.02;
+  applyScreenTexture();
   return g;
 }
 
+/* ============================================================
+   Magnetic front boards
+   ============================================================ */
+function boardMaterial(kind){
+  switch (kind){
+    case 'classic':   return new THREE.MeshPhysicalMaterial({ color:0xf4f3f8, roughness:.18, metalness:.05, clearcoat:1, clearcoatRoughness:.15, envMapIntensity:1.1 });
+    case 'heart':     return new THREE.MeshPhysicalMaterial({ color:0xc9284f, roughness:.2,  metalness:.08, clearcoat:1, clearcoatRoughness:.12, envMapIntensity:1.2 });
+    case 'character': return new THREE.MeshPhysicalMaterial({ color:0xffc93a, roughness:.28, metalness:.05, clearcoat:.85, clearcoatRoughness:.2, envMapIntensity:1.1 });
+    case 'flower':    return new THREE.MeshStandardMaterial({ color:0xf3e9d8, roughness:.55, metalness:.02, envMapIntensity:.9 });
+    case 'disco':     return new THREE.MeshStandardMaterial({ color:0xe8e8f0, roughness:.16, metalness:.95, envMapIntensity:1.5 });
+    default:          return new THREE.MeshStandardMaterial({ color:0xaba8ba, roughness:.55, metalness:.12, envMapIntensity:.9 });
+  }
+}
+
+/* per-pod board specs: outline shape, dimensions (for UV mapping),
+   and magnet-dot positions that stay inside each outline */
+function boardSpec(boothKind, boardKind){
+  if (boothKind === 'standard'){
+    switch (boardKind){
+      case 'heart':     return { shape:heartShape(1.5, 1.7, .10), w:1.5,  h:1.9,  dots:[[-.5,.5],[.5,.5],[0,-.5]] };
+      case 'character': return { shape:roundedRectShape(1.02, 1.42, .48), w:1.02, h:1.42, dots:[[-.36,.5],[.36,.5],[-.36,-.5],[.36,-.5]] };
+      case 'flower':    return { shape:roundedRectShape(1.12, 1.42, .22), w:1.12, h:1.42, dots:[[-.45,.58],[.45,.58],[-.45,-.58],[.45,-.58]] };
+      case 'disco':     return { shape:roundedRectShape(1.06, 1.36, .12), w:1.06, h:1.36, dots:[[-.44,.57],[.44,.57],[-.44,-.57],[.44,-.57]] };
+      default:          return { shape:roundedRectShape(1.06, 1.36, .18), w:1.06, h:1.36, dots:[[-.43,.56],[.43,.56],[-.43,-.56],[.43,-.56]] };
+    }
+  }
+  /* retro boards: smaller, shaped around the DSLR lens so the camera,
+     screen and print slot are never covered */
+  switch (boardKind){
+    case 'heart':     return { shape:heartShape(.6, .56, .02), w:.6,  h:.62, dots:[[-.2,.14],[.2,.14]] };
+    case 'character': return { shape:roundedRectShape(.5, .6, .24),  w:.5,  h:.6,  dots:[[-.16,.22],[.16,.22],[-.16,-.22],[.16,-.22]] };
+    case 'flower':    return { shape:roundedRectShape(.56, .56, .12), w:.56, h:.56, dots:[[-.22,.22],[.22,.22],[-.22,-.22],[.22,-.22]] };
+    case 'disco':     return { shape:roundedRectShape(.52, .52, .06), w:.52, h:.52, dots:[[-.21,.21],[.21,.21],[-.21,-.21],[.21,-.21]] };
+    default:          return { shape:roundedRectShape(.52, .52, .09), w:.52, h:.52, dots:[[-.2,.2],[.2,.2],[-.2,-.2],[.2,-.2]] };
+  }
+}
+
+function buildFrontBoard(boardKind){
+  const ud = headGroup.userData;
+  const retro = ud.style === 'retro';
+  const spec = boardSpec(ud.style, boardKind);
+  const shape = spec.shape;
+
+  // cut-out framing the ring light (standard) or the DSLR lens (retro)
+  let holeRx, holeRy;
+  if (ud.hole.type === 'ellipse'){
+    holeRx = ud.hole.rx; holeRy = ud.hole.ry;
+    shape.holes.push(ellipseHolePath(0, 0, holeRx, holeRy));
+  } else {
+    holeRx = holeRy = ud.hole.r;
+    shape.holes.push(circleHolePath(0, 0, ud.hole.r));
+  }
+
+  const g = new THREE.Group();
+  const thickness = retro ? .04 : .05;
+  const board = mesh(extrudeFlat(shape, thickness, retro ? .009 : .012, 4), boardMaterial(boardKind), 0, 0, 0);
+  g.add(board);
+
+  // small chrome magnet caps — reads as a removable mounted board
+  const dotGeo = new THREE.CylinderGeometry(retro ? .011 : .016, retro ? .011 : .016, .012, 16);
+  spec.dots.forEach(([dx, dy]) => {
+    const dot = mesh(dotGeo, chromeMat, dx, dy, thickness / 2 + .004);
+    dot.rotation.x = Math.PI / 2;
+    g.add(dot);
+  });
+
+  /* --- design-specific detailing --- */
+  if (boardKind === 'character'){
+    // goggle-style dark ring around the cut-out + strap over the top
+    const ringShape = ud.hole.type === 'ellipse'
+      ? ellipseShape(holeRx + .06, holeRy + .06)
+      : ellipseShape(holeRx + .045, holeRy + .045);
+    ringShape.holes.push(ud.hole.type === 'ellipse'
+      ? ellipseHolePath(0, 0, holeRx + .004, holeRy + .004)
+      : circleHolePath(0, 0, holeRx + .004));
+    const goggle = mesh(extrudeFlat(ringShape, .028, .007, 3), new THREE.MeshStandardMaterial({ color:0x34343c, roughness:.35, metalness:.5 }), 0, 0, thickness / 2 + .01);
+    g.add(goggle);
+    const strap = mesh(
+      roundedBox(retro ? .3 : .6, retro ? .05 : .09, retro ? .05 : .055, .02, 2),
+      new THREE.MeshStandardMaterial({ color:0x2e2e36, roughness:.5, metalness:.3 }),
+      0, retro ? .22 : .58, 0
+    );
+    g.add(strap);
+  }
+  else if (boardKind === 'flower'){
+    // blooms following the board outline
+    const pts = shape.getPoints(retro ? 34 : 46);
+    const palette = [0xf2c9d4, 0xf7e8e2, 0xd8a7c4, 0xb98cc9, 0xf6f1ea];
+    const petal = new THREE.SphereGeometry(1, 10, 8);
+    const inst = new THREE.InstancedMesh(petal, new THREE.MeshStandardMaterial({ roughness:.75 }), pts.length);
+    const dummy = new THREE.Object3D();
+    const col = new THREE.Color();
+    pts.forEach((p, i) => {
+      const s = (retro ? .022 : .042) + Math.random() * (retro ? .014 : .03);
+      dummy.position.set(p.x, p.y, thickness / 2 + .01 + Math.random() * .01);
+      dummy.scale.set(s, s * (.75 + Math.random() * .3), s * .65);
+      dummy.rotation.set(Math.random(), Math.random(), Math.random());
+      dummy.updateMatrix();
+      inst.setMatrixAt(i, dummy.matrix);
+      inst.setColorAt(i, col.setHex(palette[(Math.random() * palette.length) | 0]));
+    });
+    inst.castShadow = true;
+    g.add(inst);
+  }
+  else if (boardKind === 'disco'){
+    // mirror-tile face overlay, UV-mapped to the board outline
+    const faceGeo = new THREE.ShapeGeometry(shape, 24);
+    const pos = faceGeo.attributes.position, uv = faceGeo.attributes.uv;
+    for (let i = 0; i < uv.count; i++){
+      uv.setXY(i, pos.getX(i) / spec.w + .5, pos.getY(i) / spec.h + .5);
+    }
+    uv.needsUpdate = true;
+    const face = new THREE.Mesh(faceGeo, new THREE.MeshStandardMaterial({
+      map:discoTex, metalness:.85, roughness:.28, envMapIntensity:1.5,
+    }));
+    face.position.z = thickness / 2 + .002;
+    g.add(face);
+  }
+  else if (boardKind === 'custom'){
+    // subtle placeholder frame suggesting your artwork goes here
+    const inW = spec.w * .78, inH = spec.h * .78;
+    const frameShape = roundedRectShape(inW, inH, .06);
+    frameShape.holes.push(new THREE.Path().setFromPoints(roundedRectShape(inW - .05, inH - .05, .05).getPoints(24)).closePath ? roundedRectShape(inW - .05, inH - .05, .05).getPoints && ellipseHolePath(0,0,0,0) : ellipseHolePath(0,0,0,0));
+    // (simple raised border instead of a hole-based frame, kept robust)
+    frameShape.holes.length = 0;
+    const border = mesh(extrudeFlat(roundedRectShape(inW, inH, .06), .012, .004, 2), new THREE.MeshStandardMaterial({ color:0x8f8ca0, roughness:.45, metalness:.2 }), 0, 0, thickness / 2 + .004);
+    border.scale.z = .6;
+    g.add(border);
+    const inner = mesh(extrudeFlat(roundedRectShape(inW - .05, inH - .05, .05), .014, .004, 2), boardMaterial('custom'), 0, 0, thickness / 2 + .006);
+    g.add(inner);
+  }
+
+  g.position.set(0, ud.boardY, ud.boardZ);
+  return g;
+}
+
+function setBoard(kind, animate){
+  if (!headGroup) return;
+  if (boardGroup){
+    const old = boardGroup;
+    boardGroup = null;
+    if (animate && !REDUCED){
+      tween({ duration:200, ease:ease.inCubic, onUpdate:t => old.scale.setScalar(1 - .25 * t) });
+      fadeGroup(old, 1, 0, 200, () => headGroup.remove(old));
+    } else {
+      headGroup.remove(old);
+    }
+  }
+  const g = buildFrontBoard(kind);
+  makeTransparent(g);
+  headGroup.add(g);
+  boardGroup = g;
+  if (animate && !REDUCED){
+    g.scale.setScalar(.75);
+    tween({ duration:460, ease:ease.outBack, onUpdate:t => g.scale.setScalar(.75 + .25 * t) });
+    fadeGroup(g, 0, 1, 340);
+  } else {
+    fadeGroup(g, 0, 1, 1);
+  }
+}
+
+/* ---------- booth assembly ---------- */
 function buildBooth(kind, animate){
   const doBuild = () => {
     while (boothGroup.children.length) boothGroup.remove(boothGroup.children[0]);
+    boardGroup = null;
     boothGroup.add(buildStand(kind));
     headGroup = buildHead(kind);
     boothGroup.add(headGroup);
+    setBoard(state.board, false);
     if (animate && !REDUCED){
       headGroup.scale.setScalar(.001);
       tween({
@@ -1033,7 +1340,7 @@ function createAddonMesh(id){
 
 function toggleAddonMesh(id, on){
   if (id === 'welcome'){
-    if (screenMesh) screenMesh.material.map = on ? screenTexWelcome : screenTexDefault;
+    applyScreenTexture();
     return;
   }
   if (on){
@@ -1042,7 +1349,6 @@ function toggleAddonMesh(id, on){
     addonObjects[id] = g;
     addonRoot.add(g);
     if (!REDUCED){
-      const target = g.position.y;
       g.scale.setScalar(.6);
       tween({ duration:480, ease:ease.outBack, onUpdate:t => g.scale.setScalar(.6 + .4 * t) });
     }
@@ -1064,7 +1370,7 @@ let targetRotY = -.35;
 let dragging = false, lastX = 0, lastInteract = 0, velocity = 0;
 const dragHint = document.getElementById('drag-hint');
 
-/* ---------- zoom state ---------- */
+/* ---------- zoom state (user-driven only: buttons, wheel, pinch) ---------- */
 let zoom = 1, targetZoom = 1;
 const ZOOM_MIN = .55, ZOOM_MAX = 1.65;
 const clampZoom = z => Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, z));
@@ -1156,7 +1462,7 @@ function animate(){
   }
   boothGroup.rotation.y += (targetRotY - boothGroup.rotation.y) * .12;
 
-  // zoom + camera placement
+  // zoom + camera placement (zoom only ever changes from user input)
   zoom += (targetZoom - zoom) * .15;
   const camVec = camBaseVec.clone().multiplyScalar(zoom);
   camera.position.set(
@@ -1206,12 +1512,13 @@ function updatePrice(){
 
 function updateSummary(){
   const s = document.getElementById('summary');
-  const parts = [BOOTHS[state.type].name, COLORS[state.color].name];
+  const parts = [BOOTHS[state.type].name, COLORS[state.color].name, BOARDS[state.board].name];
   if (state.backdrop !== 'none') parts.push(BACKDROPS[state.backdrop].name);
   state.addons.forEach(id => parts.push(ADDONS[id].name));
   s.innerHTML = parts.map(p => `<span class="chip">${p}</span>`).join('');
   document.getElementById('hint-type').textContent = `from ${fmt(BOOTHS[state.type].price)}`;
   document.getElementById('hint-color').textContent = COLORS[state.color].name;
+  document.getElementById('hint-board').textContent = BOARDS[state.board].name;
   document.getElementById('hint-backdrop').textContent = BACKDROPS[state.backdrop].name;
   const n = state.addons.size;
   document.getElementById('hint-addons').textContent = n ? `${n} selected` : 'optional';
@@ -1231,10 +1538,11 @@ Object.entries(BOOTHS).forEach(([key, b]) => {
   btn.addEventListener('click', () => {
     if (state.type === key) return;
     state.type = key;
-    if (key === 'vintage' && state.color === 'white'){
-      state.color = 'champagne';
-      pressed(colorWrap, 'champagne');
-      tweenBodyColor(COLORS.champagne.hex);
+    // the retro pod ships in light finishes by default — nudge away from black
+    if (key === 'retro' && state.color === 'black'){
+      state.color = 'white';
+      pressed(colorWrap, 'white');
+      tweenBodyColor(COLORS.white.hex);
     }
     pressed(typeWrap, key);
     buildBooth(key, true);
@@ -1265,6 +1573,23 @@ Object.entries(COLORS).forEach(([key, c]) => {
     updateSummary();
   });
   colorWrap.appendChild(btn);
+});
+
+/* --- front board cards --- */
+const boardWrap = document.getElementById('board-cards');
+Object.entries(BOARDS).forEach(([key, b]) => {
+  const btn = document.createElement('button');
+  btn.className = 'card'; btn.dataset.key = key;
+  btn.setAttribute('aria-pressed', String(key === state.board));
+  btn.innerHTML = `<div class="c-name">${b.name}</div><div class="c-sub">${b.sub}</div>`;
+  btn.addEventListener('click', () => {
+    if (state.board === key) return;
+    state.board = key;
+    pressed(boardWrap, key);
+    setBoard(key, true);
+    updateSummary();
+  });
+  boardWrap.appendChild(btn);
 });
 
 /* --- backdrop cards --- */
@@ -1313,6 +1638,7 @@ function openModal(){
   const rows = [
     ['Booth', BOOTHS[state.type].name + ' · ' + fmt(BOOTHS[state.type].price)],
     ['Finish', COLORS[state.color].name],
+    ['Front board', BOARDS[state.board].name],
     ['Backdrop', BACKDROPS[state.backdrop].name],
   ];
   const addons = [...state.addons].map(id => ADDONS[id].name + ' · +' + fmt(ADDONS[id].price));
